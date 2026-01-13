@@ -8,6 +8,7 @@ import { getApiUrl } from '@/config/api';
 import type { Product, MediaItem } from '@/types';
 
 interface EditingProduct extends Partial<Product> {
+  _id?: string;
   cloudinaryId?: string;
 }
 
@@ -36,7 +37,12 @@ function AdminDashboard() {
   const fetchProducts = async (): Promise<void> => {
     try {
       const response = await axios.get(`${getApiUrl()}/products`);
-      setProducts(response.data);
+      // Normalize products to have id field from _id
+      const normalizedProducts = response.data.map((product: Product) => ({
+        ...product,
+        id: product._id || product.id,
+      }));
+      setProducts(normalizedProducts);
     } catch (_error) {
       console.error('Erro ao buscar produtos:', _error);
     } finally {
@@ -262,16 +268,21 @@ function AdminDashboard() {
     };
 
     try {
-      if (editingProduct.id) {
-        await axios.put(`${getApiUrl()}/admin/products/${editingProduct.id}`, payload);
+      if (editingProduct._id) {
+        await axios.put(`${getApiUrl()}/admin/products/${editingProduct._id}`, payload);
       } else {
         await axios.post(`${getApiUrl()}/admin/products`, payload);
       }
       goBack();
       // Pequeno delay para garantir que o backend liberou o arquivo
       setTimeout(() => fetchProducts(), 500);
-    } catch {
-      alert('Erro ao salvar');
+    } catch (error) {
+      console.error('Erro ao salvar produto:', error);
+      if (axios.isAxiosError(error) && error.response) {
+        alert(`Erro ao salvar: ${error.response.data.details || error.response.data.error}`);
+      } else {
+        alert('Erro ao salvar');
+      }
     } finally {
       setSaving(false);
     }
@@ -328,7 +339,7 @@ function AdminDashboard() {
           >
             ←
           </button>
-          <span style={{ fontWeight: 700 }}>{editingProduct.id ? 'Editar' : 'Novo'} Produto</span>
+          <span style={{ fontWeight: 700 }}>{editingProduct._id ? 'Editar' : 'Novo'} Produto</span>
         </header>
 
         <form onSubmit={handleSave} style={{ padding: 16, maxWidth: 600, margin: '0 auto' }}>
@@ -799,7 +810,7 @@ function AdminDashboard() {
 
             return (
               <div
-                key={product.id}
+                key={product._id || product.id}
                 style={{
                   background: '#1a1a1a',
                   borderRadius: 12,
@@ -880,7 +891,7 @@ function AdminDashboard() {
                       ✏️ Editar
                     </button>
                     <button
-                      onClick={() => handleDelete(product.id, product.name)}
+                      onClick={() => handleDelete(product._id || product.id, product.name)}
                       style={{
                         background: '#4a1515',
                         color: '#f87171',

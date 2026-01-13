@@ -7,6 +7,7 @@ export interface MediaItem {
 
 // Product Types
 export interface Product {
+  _id?: string; // MongoDB ID
   id: string | number;
   name: string;
   price: number;

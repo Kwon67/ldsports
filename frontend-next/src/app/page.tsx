@@ -38,7 +38,12 @@ export default function HomePage() {
         throw new Error('Erro ao buscar produtos');
       }
       const data: Product[] = await response.json();
-      setProducts(data);
+      // Normalize products to have id field from _id
+      const normalizedProducts = data.map(product => ({
+        ...product,
+        id: product._id || product.id,
+      }));
+      setProducts(normalizedProducts);
       setError(null);
     } catch (err) {
       console.error(err);
