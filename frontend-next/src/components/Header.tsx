@@ -246,7 +246,7 @@ function Header() {
                   Frete grátis para Piranhas, AL
                 </p>
                 <p className="text-xs font-bold uppercase tracking-wider text-gray-700">
-                  LDsports © 2025
+                  LDsports © 2026
                 </p>
               </div>
             </div>
@@ -255,20 +255,20 @@ function Header() {
       )}
 
       {searchOpen && (
-        <div className="fixed inset-0 z-60 bg-white flex flex-col">
-          <div className="container-custom h-20 flex items-center justify-between border-b border-gray-100">
+        <div className="fixed inset-0 z-60 bg-white flex flex-col overflow-hidden">
+          <div className="max-w-[1440px] mx-auto h-14 sm:h-20 flex items-center justify-between border-b border-gray-100 px-3 sm:px-4 md:px-8 flex-shrink-0">
             <div className="flex items-center gap-1 opacity-50">
-              <div className="w-8 h-8 bg-black text-white flex items-center justify-center font-black text-lg tracking-tighter italic transform -skew-x-12">
+              <div className="w-6 h-6 sm:w-8 sm:h-8 bg-black text-white flex items-center justify-center font-black text-sm sm:text-lg tracking-tighter italic transform -skew-x-12">
                 LD
               </div>
             </div>
             <button
-              className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+              className="p-1.5 sm:p-2 hover:bg-gray-100 rounded-full transition-colors flex items-center gap-1 sm:gap-2"
               onClick={() => setSearchOpen(false)}
             >
-              <span className="text-sm font-bold uppercase tracking-widest mr-2">Fechar</span>
+              <span className="text-xs sm:text-sm font-bold uppercase tracking-widest hidden sm:inline">Fechar</span>
               <svg
-                className="w-6 h-6 inline-block"
+                className="w-5 h-5 sm:w-6 sm:h-6"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -283,21 +283,21 @@ function Header() {
             </button>
           </div>
 
-          <div className="flex-1 container-custom flex flex-col pt-10">
+          <div className="flex-1 max-w-[1440px] mx-auto w-full flex flex-col pt-4 sm:pt-10 px-3 sm:px-4 md:px-8 overflow-y-auto">
             <form onSubmit={handleSearch} className="w-full max-w-3xl mx-auto relative">
               <input
                 type="text"
                 placeholder="O QUE VOCÊ ESTÁ PROCURANDO?"
-                className="w-full text-2xl md:text-4xl font-black uppercase border-b-2 border-gray-200 py-4 pr-12 focus:outline-none focus:border-black placeholder-gray-300 bg-transparent"
+                className="w-full text-lg sm:text-2xl md:text-4xl font-black uppercase border-b-2 border-gray-200 py-3 sm:py-4 pr-10 sm:pr-12 focus:outline-none focus:border-black placeholder-gray-300 bg-transparent"
                 value={searchQuery}
                 onChange={(e: ChangeEvent<HTMLInputElement>) => setSearchQuery(e.target.value)}
                 autoFocus
               />
               <button
                 type="submit"
-                className="absolute right-0 top-1/2 transform -translate-y-1/2 p-2 hover:bg-gray-100 rounded-full"
+                className="absolute right-0 top-1/2 transform -translate-y-1/2 p-1.5 sm:p-2 hover:bg-gray-100 rounded-full"
               >
-                <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-5 h-5 sm:w-8 sm:h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
@@ -308,15 +308,15 @@ function Header() {
               </button>
             </form>
 
-            <div className="mt-10 max-w-3xl mx-auto w-full">
-              <h3 className="text-sm font-bold uppercase tracking-widest text-gray-500 mb-4">
+            <div className="mt-6 sm:mt-10 max-w-3xl mx-auto w-full pb-6 sm:pb-10">
+              <h3 className="text-xs sm:text-sm font-bold uppercase tracking-widest text-gray-500 mb-3 sm:mb-4">
                 Termos Populares
               </h3>
-              <div className="flex flex-wrap gap-3">
+              <div className="flex flex-wrap gap-2 sm:gap-3">
                 {['Flamengo', 'Real Madrid', 'Brasil', 'Lançamentos', 'Outlet'].map(term => (
                   <button
                     key={term}
-                    className="px-4 py-2 bg-gray-100 hover:bg-black hover:text-white transition-colors text-sm font-bold uppercase tracking-wide rounded-sm"
+                    className="px-3 py-1.5 sm:px-4 sm:py-2 bg-gray-100 hover:bg-black hover:text-white transition-colors text-xs sm:text-sm font-bold uppercase tracking-wide rounded-sm"
                     onClick={() => {
                       setSearchQuery(term);
                     }}

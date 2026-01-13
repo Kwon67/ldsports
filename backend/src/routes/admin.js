@@ -71,6 +71,33 @@ router.post('/upload', uploadImage.single('image'), async (req, res) => {
   }
 });
 
+// Upload Hero Image to Cloudinary (larger size for hero section)
+router.post('/upload-hero', uploadImage.single('image'), async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ error: 'Nenhuma imagem enviada' });
+    }
+
+    const b64 = Buffer.from(req.file.buffer).toString('base64');
+    const dataURI = `data:${req.file.mimetype};base64,${b64}`;
+
+    const result = await cloudinary.uploader.upload(dataURI, {
+      folder: 'ldsports/hero',
+      transformation: [{ width: 1920, height: 1080, crop: 'limit', quality: 'auto:best' }],
+    });
+
+    res.json({
+      success: true,
+      url: result.secure_url,
+      publicId: result.public_id,
+      type: 'image',
+    });
+  } catch (error) {
+    console.error('Cloudinary upload error:', error);
+    res.status(500).json({ error: 'Erro ao fazer upload da imagem' });
+  }
+});
+
 // Upload Video to Cloudinary
 router.post('/upload-video', uploadVideo.single('video'), async (req, res) => {
   try {
@@ -209,6 +236,41 @@ router.delete('/products/:id', async (req, res) => {
     console.error('Error deleting product:', error.message);
     console.error('Error details:', error);
     res.status(500).json({ error: 'Erro ao deletar produto', details: error.message });
+  }
+});
+
+const fs = require('fs');
+const path = require('path');
+
+const SETTINGS_FILE = path.join(__dirname, '../data/settings.json');
+
+// Get Settings
+router.get('/settings', (req, res) => {
+  try {
+    const settings = JSON.parse(fs.readFileSync(SETTINGS_FILE, 'utf8'));
+    if (!settings.heroImages && settings.heroImage) {
+      settings.heroImages = [settings.heroImage];
+    }
+    res.json(settings);
+  } catch (error) {
+    console.error('Error reading settings:', error);
+    res.json({ heroImages: [], heroImage: '' });
+  }
+});
+
+// Update Settings
+router.put('/settings', (req, res) => {
+  try {
+    const { heroImage, heroImages } = req.body;
+    const settings = {
+      heroImages: Array.isArray(heroImages) ? heroImages.filter(Boolean) : [],
+      heroImage: heroImage || (heroImages?.[0] || ''),
+    };
+    fs.writeFileSync(SETTINGS_FILE, JSON.stringify(settings, null, 2));
+    res.json({ success: true, settings });
+  } catch (error) {
+    console.error('Error saving settings:', error);
+    res.status(500).json({ error: 'Erro ao salvar configurações' });
   }
 });
 

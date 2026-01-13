@@ -15,7 +15,11 @@ interface EditingProduct extends Partial<Product> {
 function AdminDashboard() {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  const [view, setView] = useState<'list' | 'edit'>('list');
+  const [view, setView] = useState<'list' | 'edit' | 'settings'>('list');
+  const [heroImages, setHeroImages] = useState<string[]>([]);
+  const [savingSettings, setSavingSettings] = useState<boolean>(false);
+  const [uploadingHero, setUploadingHero] = useState<boolean>(false);
+  const heroImageInputRef = useRef<HTMLInputElement>(null);
   const [editingProduct, setEditingProduct] = useState<EditingProduct | null>(null);
   const [uploading, setUploading] = useState<boolean>(false);
   const [uploadingVideo, setUploadingVideo] = useState<boolean>(false);
@@ -25,14 +29,6 @@ function AdminDashboard() {
   const videoInputRef = useRef<HTMLInputElement>(null);
   const { logout, isAuthenticated } = useAuth();
   const router = useRouter();
-
-  useEffect(() => {
-    if (!isAuthenticated) {
-      router.push('/admin/login');
-      return;
-    }
-    fetchProducts();
-  }, [isAuthenticated, router]);
 
   const fetchProducts = async (): Promise<void> => {
     try {
@@ -49,6 +45,80 @@ function AdminDashboard() {
       setLoading(false);
     }
   };
+
+  const fetchSettings = async (): Promise<void> => {
+    try {
+      const response = await axios.get(`${getApiUrl()}/admin/settings`);
+      const images = response.data.heroImages || (response.data.heroImage ? [response.data.heroImage] : []);
+      setHeroImages(images);
+    } catch (error) {
+      console.error('Erro ao buscar configurações:', error);
+    }
+  };
+
+  const handleHeroImageUpload = async (e: ChangeEvent<HTMLInputElement>): Promise<void> => {
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
+
+    setUploadingHero(true);
+    const newImages: string[] = [...heroImages];
+
+    try {
+      for (const file of Array.from(files)) {
+        const formData = new FormData();
+        formData.append('image', file);
+        const response = await axios.post(`${getApiUrl()}/admin/upload-hero`, formData, {
+          headers: { 'Content-Type': 'multipart/form-data' },
+        });
+        newImages.push(response.data.url);
+      }
+      setHeroImages(newImages);
+      await axios.put(`${getApiUrl()}/admin/settings`, { heroImages: newImages });
+      alert(`${files.length} imagem(ns) adicionada(s) com sucesso!`);
+    } catch (error) {
+      console.error('Erro no upload:', error);
+      alert('Erro ao fazer upload da(s) imagem(ns)');
+    } finally {
+      setUploadingHero(false);
+      if (heroImageInputRef.current) {
+        heroImageInputRef.current.value = '';
+      }
+    }
+  };
+
+  const removeHeroImage = async (index: number): Promise<void> => {
+    const newImages = heroImages.filter((_, i) => i !== index);
+    setHeroImages(newImages);
+    try {
+      await axios.put(`${getApiUrl()}/admin/settings`, { heroImages: newImages });
+      alert('Imagem removida com sucesso!');
+    } catch (error) {
+      console.error('Erro ao remover imagem:', error);
+      alert('Erro ao remover imagem');
+    }
+  };
+
+  const saveSettings = async (): Promise<void> => {
+    setSavingSettings(true);
+    try {
+      await axios.put(`${getApiUrl()}/admin/settings`, { heroImage });
+      alert('Configurações salvas com sucesso!');
+    } catch (error) {
+      console.error('Erro ao salvar configurações:', error);
+      alert('Erro ao salvar configurações');
+    } finally {
+      setSavingSettings(false);
+    }
+  };
+
+  useEffect(() => {
+    if (!isAuthenticated) {
+      router.push('/admin/login');
+      return;
+    }
+    fetchProducts();
+    fetchSettings();
+  }, [isAuthenticated, router]);
 
   const handleDelete = async (id: string | number, name: string): Promise<void> => {
     if (window.confirm(`Excluir "${name}"?`)) {
@@ -723,6 +793,155 @@ function AdminDashboard() {
     );
   }
 
+  if (view === 'settings') {
+    return (
+      <div style={containerStyle}>
+        <header style={headerStyle}>
+          <span style={{ fontWeight: 800, fontSize: 18 }}>
+            LD<span style={{ color: '#facc15' }}>SPORTS</span> - Configurações
+          </span>
+          <button
+            onClick={() => setView('list')}
+            style={{ background: 'none', border: 'none', color: '#888', cursor: 'pointer' }}
+          >
+            ← Voltar
+          </button>
+        </header>
+        <div style={{ padding: 24, maxWidth: 800, margin: '0 auto' }}>
+          <h2 style={{ marginBottom: 24, fontSize: 24 }}>Configurações do Site</h2>
+          
+          {/* Imagens do Hero */}
+          <div style={{ marginBottom: 32 }}>
+            <h3 style={{ marginBottom: 16, fontSize: 16, color: '#888', textTransform: 'uppercase', letterSpacing: 1 }}>
+              Imagens do Hero ({heroImages.length})
+            </h3>
+            <p style={{ marginBottom: 20, fontSize: 12, color: '#666' }}>
+              As imagens mudam automaticamente a cada 5 segundos
+            </p>
+            
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 16 }}>
+              {heroImages.map((img, index) => (
+                <div
+                  key={index}
+                  style={{
+                    flex: '0 0 calc(33.333% - 12px)',
+                    minWidth: 200,
+                    padding: 16,
+                    background: '#1a1a1a',
+                    borderRadius: 12,
+                    border: '1px solid #333',
+                  }}
+                >
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
+                    <h4 style={{ margin: 0, fontSize: 14, color: '#fff', fontWeight: 700 }}>
+                      Imagem {index + 1}
+                    </h4>
+                    <button
+                      onClick={() => removeHeroImage(index)}
+                      style={{
+                        background: '#dc2626',
+                        color: '#fff',
+                        border: 'none',
+                        borderRadius: 6,
+                        width: 28,
+                        height: 28,
+                        cursor: 'pointer',
+                        fontSize: 16,
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        padding: 0,
+                      }}
+                    >
+                      ×
+                    </button>
+                  </div>
+                  <img
+                    src={img}
+                    alt={`Hero ${index + 1}`}
+                    style={{
+                      width: '100%',
+                      height: 200,
+                      objectFit: 'cover',
+                      borderRadius: 8,
+                      border: '1px solid #444',
+                      marginBottom: 8,
+                    }}
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).style.display = 'none';
+                    }}
+                  />
+                  <div style={{ fontSize: 10, color: '#666', wordBreak: 'break-all', maxHeight: 40, overflow: 'hidden' }}>
+                    {img.substring(0, 50)}...
+                  </div>
+                </div>
+              ))}
+              
+              {/* Container de Adicionar */}
+              <div
+                style={{
+                  flex: '0 0 calc(33.333% - 12px)',
+                  minWidth: 200,
+                  padding: 16,
+                  background: '#1a1a1a',
+                  borderRadius: 12,
+                  border: '2px dashed #444',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  cursor: uploadingHero ? 'not-allowed' : 'pointer',
+                  transition: 'all 0.2s',
+                }}
+                onClick={() => !uploadingHero && heroImageInputRef.current?.click()}
+                onMouseEnter={(e) => {
+                  if (!uploadingHero) {
+                    e.currentTarget.style.borderColor = '#3c6eb4';
+                    e.currentTarget.style.background = '#222';
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (!uploadingHero) {
+                    e.currentTarget.style.borderColor = '#444';
+                    e.currentTarget.style.background = '#1a1a1a';
+                  }
+                }}
+              >
+                <input
+                  ref={heroImageInputRef}
+                  type="file"
+                  accept="image/*"
+                  multiple
+                  onChange={handleHeroImageUpload}
+                  style={{ display: 'none' }}
+                />
+                <div
+                  style={{
+                    fontSize: 48,
+                    color: uploadingHero ? '#666' : '#3c6eb4',
+                    marginBottom: 12,
+                  }}
+                >
+                  {uploadingHero ? '⏳' : '+'}
+                </div>
+                <div
+                  style={{
+                    fontSize: 14,
+                    color: uploadingHero ? '#666' : '#888',
+                    textAlign: 'center',
+                    fontWeight: 600,
+                  }}
+                >
+                  {uploadingHero ? 'Enviando...' : 'Adicionar Imagem'}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   if (loading) {
     return (
       <div
@@ -763,21 +982,40 @@ function AdminDashboard() {
         </button>
       </header>
 
-      <div style={{ padding: 16 }}>
-        <div style={{ display: 'flex', gap: 12, marginBottom: 20 }}>
+      <div style={{ padding: '12px 8px' }}>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginBottom: 16 }}>
+          <button
+            onClick={() => setView('settings')}
+            style={{
+              background: '#333',
+              color: '#fff',
+              border: 'none',
+              padding: '10px 12px',
+              borderRadius: 8,
+              cursor: 'pointer',
+              fontWeight: 600,
+              fontSize: 14,
+              whiteSpace: 'nowrap',
+              flexShrink: 0,
+            }}
+          >
+            ⚙️ Configurações
+          </button>
           <input
             type="text"
             placeholder="Buscar..."
             value={searchTerm}
             onChange={e => setSearchTerm(e.target.value)}
             style={{
-              flex: 1,
+              flex: '1 1 200px',
+              minWidth: 0,
+              maxWidth: '100%',
               background: '#222',
               border: '1px solid #333',
               color: '#fff',
-              padding: '12px 16px',
+              padding: '10px 12px',
               borderRadius: 8,
-              fontSize: 16,
+              fontSize: 14,
             }}
           />
           <button
@@ -785,14 +1023,17 @@ function AdminDashboard() {
             style={{
               background: '#facc15',
               color: '#000',
-              padding: '12px 20px',
+              padding: '10px 16px',
               borderRadius: 8,
               fontWeight: 700,
               border: 'none',
               cursor: 'pointer',
+              fontSize: 14,
+              whiteSpace: 'nowrap',
+              flexShrink: 0,
             }}
           >
-            + Novo
+            + Novo Produto
           </button>
         </div>
 

@@ -4,6 +4,7 @@ import { useEffect, useState, useCallback } from 'react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import ProductGrid from '@/components/ProductGrid';
+import HeroBackground from '@/components/HeroBackground';
 import { getApiUrl } from '@/config/api';
 import { usePullToRefresh } from '@/hooks/usePullToRefresh';
 import { signIn, useSession } from 'next-auth/react';
@@ -178,28 +179,26 @@ export default function HomePage() {
 
       <main className="flex-1 pt-[100px]">
         {/* Hero Section */}
-        <section className="relative w-full h-[600px] bg-[#F5F5F5] flex items-center justify-center overflow-hidden mb-12">
-          <div
-            className="absolute inset-0 opacity-[0.08]"
-            style={{
-              backgroundImage: 'radial-gradient(circle, #000 1.5px, transparent 1.5px)',
-              backgroundSize: '24px 24px',
-              clipPath: 'polygon(0 0, 100% 0, 100% 85%, 0 100%)',
-            }}
-          ></div>
+        <section className="relative w-full h-[600px] flex items-center justify-center overflow-hidden mb-12">
+          {/* Stadium Background Image */}
+          <HeroBackground />
+          {/* Dark Overlay for text readability */}
+          <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/50 to-black/30"></div>
+          {/* Subtle gradient overlay */}
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/20"></div>
 
-          <div className="relative z-10 container-custom flex flex-col items-start justify-center h-full">
-            <div className="max-w-2xl w-full">
-              <span className="bg-black text-white px-3 py-1 text-xs sm:text-sm font-bold uppercase tracking-widest mb-4 inline-block animate-fade-in-up">
+          <div className="relative z-10 container-custom flex flex-col items-center md:items-start justify-center h-full px-4">
+            <div className="max-w-2xl w-full text-center md:text-left">
+              <span className="bg-black text-white px-4 py-1.5 text-xs sm:text-sm font-bold uppercase tracking-widest mb-4 md:mb-6 inline-block animate-fade-in-up">
                 Coleção 2026
               </span>
-              <h1 className="text-4xl sm:text-5xl md:text-7xl font-black uppercase leading-tight mb-6 tracking-tight wrap-break-word animate-fade-in-up delay-100 py-1">
-                Vista a <br /> Paixão
+              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-7xl font-black uppercase leading-tight mb-4 md:mb-6 tracking-tight wrap-break-word animate-fade-in-up delay-100 text-white drop-shadow-2xl">
+                Vista a <br className="hidden md:block" /> Paixão
               </h1>
-              <p className="text-base sm:text-lg mb-8 max-w-lg text-gray-700 pr-4 animate-fade-in-up delay-200">
+              <p className="text-sm sm:text-base md:text-lg mb-6 md:mb-8 max-w-lg mx-auto md:mx-0 text-white/90 pr-0 md:pr-4 animate-fade-in-up delay-200 drop-shadow-lg">
                 As camisas oficiais dos maiores clubes do mundo. Qualidade premium.
               </p>
-              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 w-full sm:w-auto animate-fade-in-up delay-300">
+              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 w-full sm:w-auto justify-center md:justify-start animate-fade-in-up delay-300">
                 <a
                   href="#camisas"
                   className="bg-black text-white px-6 py-3 sm:px-8 sm:py-4 font-bold uppercase tracking-widest hover:opacity-80 transition-opacity flex items-center justify-center gap-2 w-full sm:w-auto text-sm sm:text-base"
