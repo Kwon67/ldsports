@@ -101,7 +101,7 @@ function AdminDashboard() {
   const saveSettings = async (): Promise<void> => {
     setSavingSettings(true);
     try {
-      await axios.put(`${getApiUrl()}/admin/settings`, { heroImage });
+      await axios.put(`${getApiUrl()}/admin/settings`, { heroImages });
       alert('Configurações salvas com sucesso!');
     } catch (error) {
       console.error('Erro ao salvar configurações:', error);
