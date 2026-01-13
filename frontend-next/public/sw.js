@@ -29,11 +29,17 @@ self.addEventListener('activate', (event) => {
 
 // Fetch - network first, fallback to cache
 self.addEventListener('fetch', (event) => {
-  // Skip non-GET requests
-  if (event.request.method !== 'GET') return;
-  
-  // Skip API requests (sempre buscar da rede)
-  if (event.request.url.includes('/api/')) return;
+  // Skip non-GET requests - let them pass through normally
+  if (event.request.method !== 'GET') {
+    return;
+  }
+
+  // Skip API requests and Vercel scripts - let them pass through normally
+  if (event.request.url.includes('/api/') ||
+      event.request.url.includes('/_vercel/') ||
+      event.request.url.includes('/vercel/')) {
+    return;
+  }
 
   event.respondWith(
     fetch(event.request)

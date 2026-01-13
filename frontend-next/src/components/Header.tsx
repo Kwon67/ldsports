@@ -58,7 +58,7 @@ function Header() {
         >
           <div className="max-w-[1440px] mx-auto h-14 sm:h-16 flex items-center justify-between relative px-3 sm:px-4 md:px-8">
             <button
-              className="lg:hidden p-1.5 sm:p-2 touch-optimized hover:bg-gray-100 rounded-full transition-colors flex-shrink-0 z-10"
+              className="lg:hidden p-1.5 sm:p-2 touch-optimized hover:bg-gray-100 rounded-full transition-colors shrink-0 z-10"
               onClick={() => setMobileMenuOpen(true)}
               aria-label="Menu"
             >
@@ -77,7 +77,7 @@ function Header() {
               className="flex items-center gap-1 group absolute left-1/2 transform -translate-x-1/2 lg:static lg:translate-x-0 lg:left-auto z-10 pointer-events-auto"
               style={{ maxWidth: 'calc(100% - 200px)' }}
             >
-              <div className="w-8 h-8 sm:w-10 sm:h-10 bg-black text-white flex items-center justify-center font-black text-lg sm:text-xl tracking-tighter italic transform -skew-x-12 flex-shrink-0">
+              <div className="w-8 h-8 sm:w-10 sm:h-10 bg-black text-white flex items-center justify-center font-black text-lg sm:text-xl tracking-tighter italic transform -skew-x-12 shrink-0">
                 LD
               </div>
               <span className="font-bold text-lg sm:text-xl tracking-tight hidden sm:block uppercase font-display group-hover:text-gray-700 transition-colors">
@@ -97,7 +97,7 @@ function Header() {
               ))}
             </nav>
 
-            <div className="flex items-center gap-0.5 sm:gap-1 md:gap-2 flex-shrink-0 z-10 ml-auto">
+            <div className="flex items-center gap-0.5 sm:gap-1 md:gap-2 shrink-0 z-10 ml-auto">
               <button
                 className="p-1.5 sm:p-2 hover:bg-gray-100 rounded-full transition-colors touch-optimized"
                 onClick={() => setSearchOpen(true)}
@@ -145,7 +145,7 @@ function Header() {
             onClick={() => setMobileMenuOpen(false)}
           />
 
-          <div className="absolute top-0 left-0 h-full w-[85%] max-w-sm bg-gradient-to-br from-white to-gray-50 shadow-2xl flex flex-col animate-slideInLeft">
+          <div className="absolute top-0 left-0 h-full w-[85%] max-w-sm bg-linear-to-br from-white to-gray-50 shadow-2xl flex flex-col animate-slideInLeft">
             {/* Header do Menu */}
             <div className="relative p-6 pb-8 bg-black text-white overflow-hidden">
               <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/2"></div>
@@ -225,7 +225,7 @@ function Header() {
 
               {/* Seção de Login/User */}
               <div className="px-3 py-4 mt-2">
-                <div className="bg-gradient-to-br from-gray-100 to-white p-5 rounded-xl shadow-sm border border-gray-200">
+                <div className="bg-linear-to-br from-gray-100 to-white p-5 rounded-xl shadow-sm border border-gray-200">
                   <div className="flex items-center gap-2 mb-3">
                     <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
@@ -256,7 +256,7 @@ function Header() {
 
       {searchOpen && (
         <div className="fixed inset-0 z-60 bg-white flex flex-col overflow-hidden">
-          <div className="max-w-[1440px] mx-auto h-14 sm:h-20 flex items-center justify-between border-b border-gray-100 px-3 sm:px-4 md:px-8 flex-shrink-0">
+          <div className="max-w-[1440px] mx-auto h-14 sm:h-20 flex items-center justify-between border-b border-gray-100 px-3 sm:px-4 md:px-8 shrink-0">
             <div className="flex items-center gap-1 opacity-50">
               <div className="w-6 h-6 sm:w-8 sm:h-8 bg-black text-white flex items-center justify-center font-black text-sm sm:text-lg tracking-tighter italic transform -skew-x-12">
                 LD
