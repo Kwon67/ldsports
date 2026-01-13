@@ -8,6 +8,16 @@ const hasValidGoogleCredentials =
   process.env.GOOGLE_CLIENT_ID !== 'your-google-client-id-here' &&
   process.env.GOOGLE_CLIENT_SECRET !== 'your-google-client-secret-here';
 
+// Debug logging
+if (process.env.NODE_ENV === 'development') {
+  console.log('NextAuth Debug:');
+  console.log('- Has valid credentials:', hasValidGoogleCredentials);
+  console.log('- Client ID configured:', !!process.env.GOOGLE_CLIENT_ID);
+  console.log('- Client Secret configured:', !!process.env.GOOGLE_CLIENT_SECRET);
+  console.log('- NEXTAUTH_SECRET configured:', !!process.env.NEXTAUTH_SECRET);
+  console.log('- NEXTAUTH_URL:', process.env.NEXTAUTH_URL);
+}
+
 export const authOptions: NextAuthOptions = {
   providers: hasValidGoogleCredentials
     ? [
@@ -17,6 +27,7 @@ export const authOptions: NextAuthOptions = {
         }),
       ]
     : [],
+  debug: process.env.NODE_ENV === 'development',
   callbacks: {
     async session({ session, token }) {
       if (session?.user) {

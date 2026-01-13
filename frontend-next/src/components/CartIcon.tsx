@@ -11,9 +11,10 @@ function CartIcon() {
   return (
     <Link
       href="/cart"
-      className="p-2 hover:bg-gray-100 rounded-full transition-colors relative touch-optimized flex items-center justify-center"
+      className="p-1.5 sm:p-2 hover:bg-gray-100 rounded-full transition-colors relative touch-optimized flex items-center justify-center"
+      aria-label="Carrinho"
     >
-      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path
           strokeLinecap="round"
           strokeLinejoin="round"
@@ -29,7 +30,7 @@ function CartIcon() {
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
             exit={{ scale: 0 }}
-            className="absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] rounded-full bg-black text-white text-[10px] font-bold flex items-center justify-center px-1"
+            className="absolute -top-0.5 -right-0.5 min-w-[16px] h-[16px] sm:min-w-[18px] sm:h-[18px] rounded-full bg-black text-white text-[9px] sm:text-[10px] font-bold flex items-center justify-center px-0.5 sm:px-1"
           >
             {count}
           </motion.span>

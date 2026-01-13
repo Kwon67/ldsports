@@ -55,12 +55,13 @@ function Header() {
         <div
           className={`bg-white transition-all duration-300 border-b border-gray-200 ${scrolled ? 'py-0 shadow-sm' : 'py-0'}`}
         >
-          <div className="container-custom h-16 flex items-center justify-between">
+          <div className="max-w-[1440px] mx-auto h-14 sm:h-16 flex items-center justify-between relative px-3 sm:px-4 md:px-8">
             <button
-              className="lg:hidden p-2 -ml-2 touch-optimized hover:bg-gray-100 rounded-full transition-colors"
+              className="lg:hidden p-1.5 sm:p-2 touch-optimized hover:bg-gray-100 rounded-full transition-colors flex-shrink-0 z-10"
               onClick={() => setMobileMenuOpen(true)}
+              aria-label="Menu"
             >
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
@@ -72,12 +73,13 @@ function Header() {
 
             <Link
               href="/"
-              className="flex items-center gap-1 group absolute left-1/2 transform -translate-x-1/2 lg:static lg:translate-x-0 lg:left-auto"
+              className="flex items-center gap-1 group absolute left-1/2 transform -translate-x-1/2 lg:static lg:translate-x-0 lg:left-auto z-10 pointer-events-auto"
+              style={{ maxWidth: 'calc(100% - 200px)' }}
             >
-              <div className="w-10 h-10 bg-black text-white flex items-center justify-center font-black text-xl tracking-tighter italic transform -skew-x-12">
+              <div className="w-8 h-8 sm:w-10 sm:h-10 bg-black text-white flex items-center justify-center font-black text-lg sm:text-xl tracking-tighter italic transform -skew-x-12 flex-shrink-0">
                 LD
               </div>
-              <span className="font-bold text-xl tracking-tight hidden sm:block uppercase font-display group-hover:text-gray-700 transition-colors">
+              <span className="font-bold text-lg sm:text-xl tracking-tight hidden sm:block uppercase font-display group-hover:text-gray-700 transition-colors">
                 SPORTS
               </span>
             </Link>
@@ -94,12 +96,13 @@ function Header() {
               ))}
             </nav>
 
-            <div className="flex items-center gap-1 sm:gap-2">
+            <div className="flex items-center gap-0.5 sm:gap-1 md:gap-2 flex-shrink-0 z-10 ml-auto">
               <button
-                className="p-2 hover:bg-gray-100 rounded-full transition-colors touch-optimized"
+                className="p-1.5 sm:p-2 hover:bg-gray-100 rounded-full transition-colors touch-optimized"
                 onClick={() => setSearchOpen(true)}
+                aria-label="Buscar"
               >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
@@ -109,13 +112,16 @@ function Header() {
                 </svg>
               </button>
 
-              <UserAuth />
+              <div className="hidden sm:block">
+                <UserAuth />
+              </div>
 
               <Link
                 href="/favorites"
-                className="p-2 hover:bg-gray-100 rounded-full transition-colors hidden sm:block touch-optimized"
+                className="p-1.5 sm:p-2 hover:bg-gray-100 rounded-full transition-colors hidden md:block touch-optimized"
+                aria-label="Favoritos"
               >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
