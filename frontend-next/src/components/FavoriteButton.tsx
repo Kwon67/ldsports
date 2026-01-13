@@ -25,11 +25,13 @@ export default function FavoriteButton({
   return (
     <button
       onClick={e => {
+        e.preventDefault();
         e.stopPropagation();
         toggleFavorite(product);
       }}
-      className={`${sizeClasses[size]} rounded-full bg-white shadow-md flex items-center justify-center hover:scale-110 transition-transform ${className}`}
+      className={`${sizeClasses[size]} rounded-full bg-white shadow-md flex items-center justify-center hover:scale-110 transition-transform select-none ${className}`}
       aria-label={active ? 'Remover dos favoritos' : 'Adicionar aos favoritos'}
+      style={{ userSelect: 'none', WebkitUserSelect: 'none', WebkitTouchCallout: 'none' }}
     >
       <svg
         className={`w-5 h-5 transition-colors ${active ? 'fill-red-500 stroke-red-500' : 'fill-none stroke-gray-600'}`}
