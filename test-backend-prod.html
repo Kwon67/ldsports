@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste Backend LDSports</title>
+    <style>
+        body {
+            font-family: 'Courier New', monospace;
+            max-width: 900px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #0a0a0a;
+            color: #00ff00;
+        }
+        h1 {
+            color: #facc15;
+        }
+        .test-section {
+            background: #1a1a1a;
+            padding: 20px;
+            margin: 20px 0;
+            border: 1px solid #333;
+            border-radius: 8px;
+        }
+        input, button {
+            padding: 10px;
+            margin: 5px;
+            font-size: 14px;
+            background: #222;
+            color: #fff;
+            border: 1px solid #444;
+            border-radius: 4px;
+        }
+        button {
+            cursor: pointer;
+            background: #facc15;
+            color: #000;
+            font-weight: bold;
+        }
+        button:hover {
+            background: #ffd700;
+        }
+        .result {
+            margin-top: 10px;
+            padding: 10px;
+            background: #0a0a0a;
+            border: 1px solid #333;
+            border-radius: 4px;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+        .success { color: #00ff00; }
+        .error { color: #ff0000; }
+        .warning { color: #facc15; }
+    </style>
+</head>
+<body>
+    <h1>🔧 Teste Backend LDSports</h1>
+
+    <div class="test-section">
+        <h2>1. Configurar URL do Backend</h2>
+        <input
+            type="text"
+            id="backendUrl"
+            placeholder="https://seu-backend.vercel.app/api"
+            style="width: 400px;"
+        />
+        <button onclick="saveBackendUrl()">Salvar URL</button>
+        <div id="urlResult" class="result"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>2. Testar Conectividade</h2>
+        <button onclick="testConnection()">Testar Conexão</button>
+        <div id="connectionResult" class="result"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>3. Testar Endpoint de Settings</h2>
+        <button onclick="testSettings()">GET /admin/settings</button>
+        <div id="settingsResult" class="result"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>4. Testar Upload de Imagem</h2>
+        <input type="file" id="imageFile" accept="image/*" />
+        <button onclick="testUpload()">Fazer Upload</button>
+        <div id="uploadResult" class="result"></div>
+    </div>
+
+    <script>
+        let backendUrl = localStorage.getItem('backendUrl') || '';
+        if (backendUrl) {
+            document.getElementById('backendUrl').value = backendUrl;
+            document.getElementById('urlResult').innerHTML =
+                `<span class="success">✓ URL salva: ${backendUrl}</span>`;
+        }
+
+        function saveBackendUrl() {
+            backendUrl = document.getElementById('backendUrl').value.trim();
+            if (!backendUrl) {
+                document.getElementById('urlResult').innerHTML =
+                    '<span class="error">❌ Digite uma URL válida!</span>';
+                return;
+            }
+            localStorage.setItem('backendUrl', backendUrl);
+            document.getElementById('urlResult').innerHTML =
+                `<span class="success">✓ URL salva: ${backendUrl}</span>`;
+        }
+
+        async function testConnection() {
+            const result = document.getElementById('connectionResult');
+            result.innerHTML = '<span class="warning">⏳ Testando conexão...</span>';
+
+            if (!backendUrl) {
+                result.innerHTML = '<span class="error">❌ Configure a URL do backend primeiro!</span>';
+                return;
+            }
+
+            try {
+                // Remove /api do final se existir para testar a raiz
+                const baseUrl = backendUrl.replace(/\/api$/, '');
+                const response = await fetch(baseUrl);
+                const text = await response.text();
+
+                result.innerHTML = `<span class="success">✓ Conexão OK!</span>\n` +
+                    `Status: ${response.status}\n` +
+                    `Response: ${text}`;
+            } catch (error) {
+                result.innerHTML = `<span class="error">❌ Erro de conexão!</span>\n` +
+                    `Erro: ${error.message}\n\n` +
+                    `Verifique:\n` +
+                    `1. Se a URL está correta\n` +
+                    `2. Se o backend está deployado\n` +
+                    `3. Se há erro de CORS`;
+            }
+        }
+
+        async function testSettings() {
+            const result = document.getElementById('settingsResult');
+            result.innerHTML = '<span class="warning">⏳ Buscando settings...</span>';
+
+            if (!backendUrl) {
+                result.innerHTML = '<span class="error">❌ Configure a URL do backend primeiro!</span>';
+                return;
+            }
+
+            try {
+                const response = await fetch(`${backendUrl}/admin/settings`);
+                const data = await response.json();
+
+                result.innerHTML = `<span class="success">✓ Settings carregadas!</span>\n` +
+                    `Status: ${response.status}\n` +
+                    `Data: ${JSON.stringify(data, null, 2)}`;
+            } catch (error) {
+                result.innerHTML = `<span class="error">❌ Erro ao buscar settings!</span>\n` +
+                    `Erro: ${error.message}`;
+            }
+        }
+
+        async function testUpload() {
+            const result = document.getElementById('uploadResult');
+            const fileInput = document.getElementById('imageFile');
+
+            if (!backendUrl) {
+                result.innerHTML = '<span class="error">❌ Configure a URL do backend primeiro!</span>';
+                return;
+            }
+
+            if (!fileInput.files || fileInput.files.length === 0) {
+                result.innerHTML = '<span class="error">❌ Selecione uma imagem primeiro!</span>';
+                return;
+            }
+
+            const file = fileInput.files[0];
+            result.innerHTML = `<span class="warning">⏳ Fazendo upload de ${file.name}...</span>\n` +
+                `Tamanho: ${(file.size / 1024).toFixed(2)} KB\n` +
+                `Tipo: ${file.type}`;
+
+            try {
+                const formData = new FormData();
+                formData.append('image', file);
+
+                const response = await fetch(`${backendUrl}/admin/upload-hero`, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    result.innerHTML = `<span class="success">✓ Upload realizado com sucesso!</span>\n` +
+                        `Status: ${response.status}\n` +
+                        `URL: ${data.url}\n` +
+                        `Public ID: ${data.publicId}`;
+                } else {
+                    result.innerHTML = `<span class="error">❌ Erro no upload!</span>\n` +
+                        `Status: ${response.status}\n` +
+                        `Erro: ${JSON.stringify(data, null, 2)}`;
+                }
+            } catch (error) {
+                result.innerHTML = `<span class="error">❌ Erro ao fazer upload!</span>\n` +
+                    `Erro: ${error.message}\n\n` +
+                    `Possíveis causas:\n` +
+                    `1. Backend não está acessível\n` +
+                    `2. CORS não configurado\n` +
+                    `3. Cloudinary não configurado\n` +
+                    `4. Imagem muito grande (limite: 10MB)`;
+            }
+        }
+    </script>
+</body>
+</html>

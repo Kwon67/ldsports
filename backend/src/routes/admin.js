@@ -1,8 +1,25 @@
 const express = require('express');
 const router = express.Router();
 const multer = require('multer');
+const rateLimit = require('express-rate-limit');
 const cloudinary = require('../config/cloudinary');
 const Product = require('../models/Product');
+
+// Rate limiter específico para uploads (mais restritivo)
+const uploadLimiter = rateLimit({
+  windowMs: 5 * 60 * 1000, // 5 minutos
+  max: 20, // 20 uploads por 5 minutos
+  message: { error: 'Muitos uploads. Aguarde alguns minutos e tente novamente.' },
+  standardHeaders: true,
+});
+
+// Rate limiter para login (proteção contra brute force)
+const loginLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutos
+  max: 5, // 5 tentativas por 15 minutos
+  message: { error: 'Muitas tentativas de login. Tente novamente em 15 minutos.' },
+  standardHeaders: true,
+});
 
 // Multer config - store in memory for cloudinary upload
 const storage = multer.memoryStorage();
@@ -34,8 +51,8 @@ const uploadVideo = multer({
 const ADMIN_USER = 'kwon';
 const ADMIN_PASS = '251636';
 
-// Login Endpoint
-router.post('/login', (req, res) => {
+// Login Endpoint (com rate limiting para proteger contra brute force)
+router.post('/login', loginLimiter, (req, res) => {
   const { username, password } = req.body;
   if (username === ADMIN_USER && password === ADMIN_PASS) {
     return res.json({ success: true, token: 'admin-token-ldsports-2024' });
@@ -43,8 +60,8 @@ router.post('/login', (req, res) => {
   return res.status(401).json({ success: false, message: 'Credenciais inválidas' });
 });
 
-// Upload Image to Cloudinary
-router.post('/upload', uploadImage.single('image'), async (req, res) => {
+// Upload Image to Cloudinary (com rate limiting)
+router.post('/upload', uploadLimiter, uploadImage.single('image'), async (req, res) => {
   try {
     if (!req.file) {
       return res.status(400).json({ error: 'Nenhuma imagem enviada' });
@@ -71,8 +88,8 @@ router.post('/upload', uploadImage.single('image'), async (req, res) => {
   }
 });
 
-// Upload Hero Image to Cloudinary (larger size for hero section)
-router.post('/upload-hero', uploadImage.single('image'), async (req, res) => {
+// Upload Hero Image to Cloudinary (larger size for hero section, com rate limiting)
+router.post('/upload-hero', uploadLimiter, uploadImage.single('image'), async (req, res) => {
   try {
     if (!req.file) {
       return res.status(400).json({ error: 'Nenhuma imagem enviada' });
@@ -98,8 +115,8 @@ router.post('/upload-hero', uploadImage.single('image'), async (req, res) => {
   }
 });
 
-// Upload Video to Cloudinary
-router.post('/upload-video', uploadVideo.single('video'), async (req, res) => {
+// Upload Video to Cloudinary (com rate limiting)
+router.post('/upload-video', uploadLimiter, uploadVideo.single('video'), async (req, res) => {
   try {
     if (!req.file) {
       return res.status(400).json({ error: 'Nenhum vídeo enviado' });

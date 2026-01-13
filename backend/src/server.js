@@ -37,13 +37,21 @@ app.use(
   })
 );
 
-// Segurança: Rate limiting (100 requisições por 15 minutos por IP)
+// Segurança: Rate limiting (diferente para dev e produção)
+const isDevelopment = process.env.NODE_ENV !== 'production';
 const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 100,
+  windowMs: 15 * 60 * 1000, // 15 minutos
+  max: isDevelopment ? 1000 : 200, // Dev: 1000 req/15min, Prod: 200 req/15min
   message: { error: 'Muitas requisições. Tente novamente em 15 minutos.' },
   standardHeaders: true,
   legacyHeaders: false,
+  skip: (req) => {
+    // Não aplicar rate limit em rotas públicas de leitura em desenvolvimento
+    if (isDevelopment && req.method === 'GET' && req.path.startsWith('/api/products')) {
+      return true;
+    }
+    return false;
+  },
 });
 app.use(limiter);
 

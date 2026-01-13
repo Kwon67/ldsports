@@ -60,24 +60,44 @@ function AdminDashboard() {
     const files = e.target.files;
     if (!files || files.length === 0) return;
 
+    const apiUrl = getApiUrl();
+    console.log('[Upload] API URL being used:', apiUrl);
+    console.log('[Upload] Files to upload:', files.length);
+
     setUploadingHero(true);
     const newImages: string[] = [...heroImages];
 
     try {
       for (const file of Array.from(files)) {
+        console.log('[Upload] Uploading file:', file.name, 'Size:', file.size, 'Type:', file.type);
         const formData = new FormData();
         formData.append('image', file);
-        const response = await axios.post(`${getApiUrl()}/admin/upload-hero`, formData, {
+
+        const uploadUrl = `${apiUrl}/admin/upload-hero`;
+        console.log('[Upload] POST to:', uploadUrl);
+
+        const response = await axios.post(uploadUrl, formData, {
           headers: { 'Content-Type': 'multipart/form-data' },
         });
+
+        console.log('[Upload] Response:', response.data);
         newImages.push(response.data.url);
       }
+
+      console.log('[Upload] All files uploaded, saving settings...');
       setHeroImages(newImages);
-      await axios.put(`${getApiUrl()}/admin/settings`, { heroImages: newImages });
+      await axios.put(`${apiUrl}/admin/settings`, { heroImages: newImages });
+      console.log('[Upload] Settings saved successfully');
       alert(`${files.length} imagem(ns) adicionada(s) com sucesso!`);
-    } catch (error) {
-      console.error('Erro no upload:', error);
-      alert('Erro ao fazer upload da(s) imagem(ns)');
+    } catch (error: any) {
+      console.error('[Upload] ❌ Erro no upload:', error);
+      console.error('[Upload] Error details:', {
+        message: error.message,
+        response: error.response?.data,
+        status: error.response?.status,
+        url: error.config?.url
+      });
+      alert(`Erro ao fazer upload da(s) imagem(ns): ${error.response?.data?.error || error.message}`);
     } finally {
       setUploadingHero(false);
       if (heroImageInputRef.current) {
