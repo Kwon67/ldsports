@@ -2,6 +2,11 @@
 // Deve ser chamada apenas em contextos client-side (useEffect, handlers, etc.)
 
 export function getApiUrl(): string {
+  // Em produção, usar a variável de ambiente
+  if (process.env.NEXT_PUBLIC_API_URL) {
+    return process.env.NEXT_PUBLIC_API_URL;
+  }
+
   if (typeof window === 'undefined') {
     // Server-side: usar localhost
     return 'http://localhost:4001/api';
@@ -17,4 +22,4 @@ export function getApiUrl(): string {
 }
 
 // Para compatibilidade com código existente
-export const API_URL: string = 'http://localhost:4001/api';
+export const API_URL: string = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4001/api';
