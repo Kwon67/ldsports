@@ -1,0 +1,185 @@
+const express = require('express');
+const router = express.Router();
+const multer = require('multer');
+const cloudinary = require('../config/cloudinary');
+const db = require('../database');
+
+// Multer config - store in memory for cloudinary upload
+const storage = multer.memoryStorage();
+const uploadImage = multer({
+  storage,
+  limits: { fileSize: 10 * 1024 * 1024 }, // 10MB max for images
+  fileFilter: (req, file, cb) => {
+    if (file.mimetype.startsWith('image/')) {
+      cb(null, true);
+    } else {
+      cb(new Error('Apenas imagens são permitidas'), false);
+    }
+  },
+});
+
+const uploadVideo = multer({
+  storage,
+  limits: { fileSize: 100 * 1024 * 1024 }, // 100MB max for videos
+  fileFilter: (req, file, cb) => {
+    if (file.mimetype.startsWith('video/')) {
+      cb(null, true);
+    } else {
+      cb(new Error('Apenas vídeos são permitidos'), false);
+    }
+  },
+});
+
+// Hardcoded admin credentials
+const ADMIN_USER = 'kwon';
+const ADMIN_PASS = '251636';
+
+// Login Endpoint
+router.post('/login', (req, res) => {
+  const { username, password } = req.body;
+  if (username === ADMIN_USER && password === ADMIN_PASS) {
+    return res.json({ success: true, token: 'admin-token-ldsports-2024' });
+  }
+  return res.status(401).json({ success: false, message: 'Credenciais inválidas' });
+});
+
+// Upload Image to Cloudinary
+router.post('/upload', uploadImage.single('image'), async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ error: 'Nenhuma imagem enviada' });
+    }
+
+    // Convert buffer to base64 for cloudinary
+    const b64 = Buffer.from(req.file.buffer).toString('base64');
+    const dataURI = `data:${req.file.mimetype};base64,${b64}`;
+
+    const result = await cloudinary.uploader.upload(dataURI, {
+      folder: 'ldsports/products',
+      transformation: [{ width: 800, height: 800, crop: 'limit', quality: 'auto:good' }],
+    });
+
+    res.json({
+      success: true,
+      url: result.secure_url,
+      publicId: result.public_id,
+      type: 'image',
+    });
+  } catch (error) {
+    console.error('Cloudinary upload error:', error);
+    res.status(500).json({ error: 'Erro ao fazer upload da imagem' });
+  }
+});
+
+// Upload Video to Cloudinary
+router.post('/upload-video', uploadVideo.single('video'), async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ error: 'Nenhum vídeo enviado' });
+    }
+
+    // Convert buffer to base64 for cloudinary
+    const b64 = Buffer.from(req.file.buffer).toString('base64');
+    const dataURI = `data:${req.file.mimetype};base64,${b64}`;
+
+    const result = await cloudinary.uploader.upload(dataURI, {
+      folder: 'ldsports/products/videos',
+      resource_type: 'video',
+      eager: [{ format: 'mp4', video_codec: 'h264' }],
+    });
+
+    res.json({
+      success: true,
+      url: result.secure_url,
+      publicId: result.public_id,
+      type: 'video',
+    });
+  } catch (error) {
+    console.error('Cloudinary video upload error:', error);
+    res.status(500).json({ error: 'Erro ao fazer upload do vídeo' });
+  }
+});
+
+// Delete Media from Cloudinary (images or videos)
+router.delete('/media/:publicId(*)', async (req, res) => {
+  try {
+    const publicId = decodeURIComponent(req.params.publicId);
+    const isVideo = publicId.includes('/videos/');
+
+    await cloudinary.uploader.destroy(publicId, {
+      resource_type: isVideo ? 'video' : 'image',
+    });
+    res.json({ success: true });
+  } catch (error) {
+    console.error('Cloudinary delete error:', error);
+    res.status(500).json({ error: 'Erro ao deletar mídia' });
+  }
+});
+
+// Get all products (for admin)
+router.get('/products', (req, res) => {
+  const products = db.getAllProducts();
+  res.json(products);
+});
+
+// Create Product
+router.post('/products', (req, res) => {
+  const newProduct = req.body;
+  const created = db.createProduct(newProduct);
+  res.json(created);
+});
+
+// Update Product
+router.put('/products/:id', (req, res) => {
+  const { id } = req.params;
+  const updates = req.body;
+  const updated = db.updateProduct(id, updates);
+  if (updated) {
+    res.json(updated);
+  } else {
+    res.status(404).json({ message: 'Produto não encontrado' });
+  }
+});
+
+// Delete Product
+router.delete('/products/:id', async (req, res) => {
+  const { id } = req.params;
+
+  // Get product first to delete its media from cloudinary
+  const product = db.getProductById(id);
+  if (product) {
+    try {
+      // Delete all images from the images array
+      if (product.images && Array.isArray(product.images)) {
+        for (const img of product.images) {
+          if (img.publicId) {
+            await cloudinary.uploader.destroy(img.publicId);
+          }
+        }
+      }
+
+      // Delete video if exists
+      if (product.video && product.video.publicId) {
+        await cloudinary.uploader.destroy(product.video.publicId, {
+          resource_type: 'video',
+        });
+      }
+
+      // Legacy: delete single cloudinaryId if exists
+      if (product.cloudinaryId) {
+        await cloudinary.uploader.destroy(product.cloudinaryId);
+      }
+    } catch (e) {
+      console.error('Error deleting media from cloudinary:', e);
+    }
+  }
+
+  const deleted = db.deleteProduct(id);
+  if (deleted) {
+    res.json({ success: true });
+  } else {
+    res.status(404).json({ message: 'Produto não encontrado' });
+  }
+});
+
+module.exports = router;

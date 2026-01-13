@@ -1,0 +1,31 @@
+{
+  "name": "ldsports-backend",
+  "version": "1.0.0",
+  "main": "src/server.js",
+  "scripts": {
+    "dev": "fuser -k 4001/tcp 2>/dev/null; nodemon src/server.js --ignore src/db.json",
+    "start": "node src/server.js",
+    "lint": "eslint src/",
+    "lint:fix": "eslint src/ --fix",
+    "format": "prettier --write \"src/**/*.js\"",
+    "format:check": "prettier --check \"src/**/*.js\""
+  },
+  "dependencies": {
+    "cloudinary": "^2.8.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.19.2",
+    "express-rate-limit": "^7.5.1",
+    "helmet": "^8.1.0",
+    "multer": "^2.0.2",
+    "zod": "^3.25.76"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.20.0",
+    "eslint": "^9.20.0",
+    "eslint-config-prettier": "^10.1.0",
+    "globals": "^16.0.0",
+    "nodemon": "^3.1.0",
+    "prettier": "^3.5.3"
+  }
+}

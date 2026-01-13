@@ -1,0 +1,189 @@
+{
+  "products": [
+    {
+      "id": 1,
+      "name": "Camisa Brasil Home 24/25",
+      "price": 169.9,
+      "image": "https://res.cloudinary.com/diuh0ditl/image/upload/v1765503836/ldsports/products/agamdxck77udm6istxwr.jpg",
+      "sizes": [
+        "P",
+        "M",
+        "G",
+        "GG"
+      ],
+      "team": "Seleção Brasileira",
+      "cloudinaryId": "ldsports/products/agamdxck77udm6istxwr",
+      "images": [
+        {
+          "url": "https://res.cloudinary.com/diuh0ditl/image/upload/v1765503836/ldsports/products/agamdxck77udm6istxwr.jpg",
+          "publicId": "ldsports/products/agamdxck77udm6istxwr",
+          "type": "image"
+        }
+      ],
+      "discountPercentage": 10
+    },
+    {
+      "id": 2,
+      "name": "Camisa Real Madrid Home 24/25",
+      "price": 149.9,
+      "image": "https://res.cloudinary.com/diuh0ditl/image/upload/v1765504322/ldsports/products/m4bqfktwuhineblpaolx.jpg",
+      "sizes": [
+        "P",
+        "M",
+        "G",
+        "GG"
+      ],
+      "team": "Real Madrid",
+      "cloudinaryId": "ldsports/products/m4bqfktwuhineblpaolx",
+      "images": [
+        {
+          "url": "https://res.cloudinary.com/diuh0ditl/image/upload/v1765504322/ldsports/products/m4bqfktwuhineblpaolx.jpg",
+          "publicId": "ldsports/products/m4bqfktwuhineblpaolx",
+          "type": "image"
+        }
+      ],
+      "discountPercentage": 10,
+      "description": "Nova camisa do meu amigo Baú tupiraní!"
+    },
+    {
+      "id": 3,
+      "name": "Camisa PSG Home 24/25",
+      "price": 329.9,
+      "image": "https://res.cloudinary.com/diuh0ditl/image/upload/v1765503644/ldsports/products/doik4jzve7e3wrhkvbll.jpg",
+      "sizes": [
+        "P",
+        "M",
+        "G"
+      ],
+      "team": "Paris Saint-Germain",
+      "cloudinaryId": "ldsports/products/doik4jzve7e3wrhkvbll"
+    },
+    {
+      "id": 4,
+      "name": "Camisa Flamengo Home 24/25",
+      "price": 199.9,
+      "image": "https://res.cloudinary.com/diuh0ditl/image/upload/v1765502827/ldsports/products/mbk61jtdebhmtokapggx.jpg",
+      "sizes": [
+        "P",
+        "M",
+        "G",
+        "GG",
+        "XG"
+      ],
+      "team": "Flamengo",
+      "cloudinaryId": "ldsports/products/mbk61jtdebhmtokapggx"
+    },
+    {
+      "id": 5,
+      "name": "Camisa Palmeiras Home 24/25",
+      "price": 329.9,
+      "image": "https://res.cloudinary.com/diuh0ditl/image/upload/v1767041964/ldsports/products/dh40kidw9umx6fhtb9tr.jpg",
+      "sizes": [
+        "P",
+        "M",
+        "G",
+        "GG"
+      ],
+      "team": "Palmeiras",
+      "cloudinaryId": "ldsports/products/dh40kidw9umx6fhtb9tr",
+      "images": [
+        {
+          "url": "https://res.cloudinary.com/diuh0ditl/image/upload/v1767041964/ldsports/products/dh40kidw9umx6fhtb9tr.jpg",
+          "publicId": "ldsports/products/dh40kidw9umx6fhtb9tr",
+          "type": "image"
+        }
+      ],
+      "discountPercentage": 85
+    },
+    {
+      "id": 6,
+      "name": "Camisa Barcelona Home 24/25",
+      "price": 159.89,
+      "image": "https://res.cloudinary.com/diuh0ditl/image/upload/v1767042196/ldsports/products/xqgudli85mhtlueogsxq.jpg",
+      "sizes": [
+        "P",
+        "M",
+        "G",
+        "GG"
+      ],
+      "team": "Barcelona",
+      "cloudinaryId": "ldsports/products/xqgudli85mhtlueogsxq",
+      "images": [
+        {
+          "url": "https://res.cloudinary.com/diuh0ditl/image/upload/v1767042196/ldsports/products/xqgudli85mhtlueogsxq.jpg",
+          "publicId": "ldsports/products/xqgudli85mhtlueogsxq",
+          "type": "image"
+        }
+      ]
+    },
+    {
+      "id": 7,
+      "name": "Camisa Arsenal Home 24/25",
+      "price": 349.9,
+      "image": "https://res.cloudinary.com/diuh0ditl/image/upload/v1767042438/ldsports/products/dug2qv90z2kqaxuqzfhn.jpg",
+      "sizes": [
+        "P",
+        "M",
+        "G"
+      ],
+      "team": "Arsenal",
+      "cloudinaryId": "ldsports/products/dug2qv90z2kqaxuqzfhn"
+    },
+    {
+      "id": 8,
+      "name": "Camisa Liverpool Home 24/25",
+      "price": 349.9,
+      "image": "https://res.cloudinary.com/diuh0ditl/image/upload/v1767042645/ldsports/products/bxgf2dsynt0g38xvz7sx.jpg",
+      "sizes": [
+        "P",
+        "M",
+        "G",
+        "GG"
+      ],
+      "team": "Liverpool",
+      "cloudinaryId": "ldsports/products/bxgf2dsynt0g38xvz7sx"
+    },
+    {
+      "id": 9,
+      "name": "Camisa Manchester City Home 24/25",
+      "price": 349.9,
+      "image": "https://res.cloudinary.com/diuh0ditl/image/upload/v1767043016/ldsports/products/ydk6oflcbey84alsnzzm.jpg",
+      "sizes": [
+        "P",
+        "M",
+        "G",
+        "GG"
+      ],
+      "team": "Manchester City",
+      "cloudinaryId": "ldsports/products/ydk6oflcbey84alsnzzm"
+    },
+    {
+      "id": 10,
+      "name": "Camisa Corinthians Home 24/25",
+      "price": 199.9,
+      "image": "https://res.cloudinary.com/diuh0ditl/image/upload/v1767044240/ldsports/products/sounohpjxubglfgfqqh0.jpg",
+      "sizes": [
+        "P",
+        "M",
+        "G",
+        "GG"
+      ],
+      "team": "Corinthians",
+      "cloudinaryId": "ldsports/products/sounohpjxubglfgfqqh0"
+    },
+    {
+      "id": 11,
+      "name": "Camisa São Paulo Home 24/25",
+      "price": 210.99,
+      "image": "https://res.cloudinary.com/diuh0ditl/image/upload/v1767043751/ldsports/products/cspdul2onk6xdtilumj5.jpg",
+      "sizes": [
+        "P",
+        "M",
+        "G",
+        "GG"
+      ],
+      "team": "São Paulo",
+      "cloudinaryId": "ldsports/products/cspdul2onk6xdtilumj5"
+    }
+  ]
+}

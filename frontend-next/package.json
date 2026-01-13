@@ -1,0 +1,36 @@
+{
+  "name": "frontend-next",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "fuser -k 3000/tcp 2>/dev/null; rm -rf .next/dev/lock 2>/dev/null; next dev",
+    "dev:fresh": "fuser -k 3000/tcp 2>/dev/null; rm -rf .next && next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint",
+    "lint:fix": "eslint --fix",
+    "format": "prettier --write \"src/**/*.{js,jsx,ts,tsx,css,json}\"",
+    "format:check": "prettier --check \"src/**/*.{js,jsx,ts,tsx,css,json}\""
+  },
+  "dependencies": {
+    "@vercel/analytics": "^1.6.1",
+    "axios": "^1.13.2",
+    "framer-motion": "^12.23.26",
+    "next": "^16.1.1",
+    "react": "19.2.1",
+    "react-dom": "19.2.1"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.1.18",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "babel-plugin-react-compiler": "1.0.0",
+    "eslint": "^9",
+    "eslint-config-next": "16.0.10",
+    "eslint-config-prettier": "^10.1.0",
+    "prettier": "^3.5.3",
+    "tailwindcss": "^4.1.18",
+    "typescript": "^5"
+  }
+}
