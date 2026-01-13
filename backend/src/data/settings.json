@@ -1,4 +1,6 @@
 {
-  "heroImages": [],
-  "heroImage": ""
+  "heroImages": [
+    "https://res.cloudinary.com/diuh0ditl/image/upload/v1768293854/ldsports/hero/y3dpke2pkvwsb4nbwswj.jpg"
+  ],
+  "heroImage": "https://res.cloudinary.com/diuh0ditl/image/upload/v1768293854/ldsports/hero/y3dpke2pkvwsb4nbwswj.jpg"
 }
