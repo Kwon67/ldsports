@@ -178,7 +178,7 @@ function Header() {
                 </div>
 
                 <p className="text-white/70 text-xs uppercase tracking-wider font-medium">
-                  Coleção 2025
+                  Coleção 2026
                 </p>
               </div>
             </div>

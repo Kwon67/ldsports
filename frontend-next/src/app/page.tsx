@@ -191,7 +191,7 @@ export default function HomePage() {
           <div className="relative z-10 container-custom flex flex-col items-start justify-center h-full">
             <div className="max-w-2xl w-full">
               <span className="bg-black text-white px-3 py-1 text-xs sm:text-sm font-bold uppercase tracking-widest mb-4 inline-block animate-fade-in-up">
-                Coleção 2025
+                Coleção 2026
               </span>
               <h1 className="text-4xl sm:text-5xl md:text-7xl font-black uppercase leading-tight mb-6 tracking-tight wrap-break-word animate-fade-in-up delay-100 py-1">
                 Vista a <br /> Paixão
