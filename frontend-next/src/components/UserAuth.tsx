@@ -1,14 +1,48 @@
 'use client';
 
 import { signIn, signOut, useSession } from 'next-auth/react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 export default function UserAuth() {
   const { data: session, status } = useSession();
   const [showMenu, setShowMenu] = useState(false);
+  const [hasProviders, setHasProviders] = useState(false);
+
+  useEffect(() => {
+    // Check if authentication providers are configured
+    fetch('/api/auth/providers')
+      .then(res => res.json())
+      .then(providers => {
+        setHasProviders(Object.keys(providers).length > 0);
+      })
+      .catch(() => setHasProviders(false));
+  }, []);
 
   if (status === 'loading') {
     return null;
+  }
+
+  // Don't show login button if no providers are configured
+  if (!hasProviders && !session) {
+    return (
+      <button
+        onClick={() =>
+          alert(
+            'Login via Google não está configurado ainda. Configure as credenciais no Google Cloud Console.'
+          )
+        }
+        className="flex items-center gap-2 px-4 py-2 bg-gray-700 text-gray-300 rounded-lg font-semibold cursor-not-allowed"
+        title="Configuração do Google OAuth necessária"
+      >
+        <svg className="w-5 h-5" viewBox="0 0 24 24">
+          <path
+            fill="currentColor"
+            d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+          />
+        </svg>
+        Entrar
+      </button>
+    );
   }
 
   if (session?.user) {
