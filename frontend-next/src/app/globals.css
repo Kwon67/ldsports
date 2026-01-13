@@ -202,6 +202,32 @@
   }
 }
 
+@keyframes gradient {
+  0%,
+  100% {
+    background-size: 200% 200%;
+    background-position: left center;
+  }
+  50% {
+    background-size: 200% 200%;
+    background-position: right center;
+  }
+}
+
+@keyframes tilt {
+  0%,
+  50%,
+  100% {
+    transform: rotate(0deg);
+  }
+  25% {
+    transform: rotate(0.5deg);
+  }
+  75% {
+    transform: rotate(-0.5deg);
+  }
+}
+
 @layer utilities {
   .container-custom {
     @apply max-w-[1440px] mx-auto px-4 sm:px-8;
@@ -279,6 +305,18 @@
   }
   .delay-500 {
     animation-delay: 500ms;
+  }
+  .delay-1000 {
+    animation-delay: 1000ms;
+  }
+
+  .animate-gradient {
+    animation: gradient 3s ease infinite;
+    background-size: 200% 200%;
+  }
+
+  .animate-tilt {
+    animation: tilt 10s infinite linear;
   }
 
   .hover-lift {

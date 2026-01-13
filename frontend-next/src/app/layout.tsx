@@ -1,7 +1,6 @@
 import './globals.css';
 import { Inter, Oswald } from 'next/font/google';
 import { Providers } from './providers';
-import FloatingWhatsApp from '@/components/FloatingWhatsApp';
 import type { Metadata, Viewport } from 'next';
 import type { ReactNode } from 'react';
 
@@ -61,7 +60,6 @@ export default function RootLayout({ children }: RootLayoutProps) {
       </head>
       <body style={{ fontFamily: 'var(--font-inter)' }}>
         <Providers>{children}</Providers>
-        <FloatingWhatsApp />
 
         {/* Register Service Worker */}
         <script

@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { usePathname } from 'next/navigation';
+import { useUI } from '@/context/UIContext';
 
 const WHATSAPP_NUMBER = '5582982105170';
 const DEFAULT_MESSAGE = 'Olá! Vim pelo site LDSports e gostaria de mais informações.';
@@ -10,6 +11,7 @@ export default function FloatingWhatsApp() {
   const [isVisible, setIsVisible] = useState(false);
   const [isPulsing, setIsPulsing] = useState(true);
   const pathname = usePathname();
+  const { mobileMenuOpen } = useUI();
 
   // Hide on cart, checkout and admin pages
   const hiddenPages = ['/cart', '/checkout', '/admin'];
@@ -42,7 +44,7 @@ export default function FloatingWhatsApp() {
     document.body.removeChild(link);
   };
 
-  if (!isVisible || shouldHide) return null;
+  if (!isVisible || shouldHide || mobileMenuOpen) return null;
 
   return (
     <button

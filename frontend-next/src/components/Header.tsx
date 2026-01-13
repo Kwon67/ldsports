@@ -4,10 +4,11 @@ import { useState, useEffect, FormEvent, ChangeEvent } from 'react';
 import CartIcon from './CartIcon';
 import UserAuth from './UserAuth';
 import Link from 'next/link';
+import { useUI } from '@/context/UIContext';
 
 function Header() {
   const [scrolled, setScrolled] = useState<boolean>(false);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState<boolean>(false);
+  const { mobileMenuOpen, setMobileMenuOpen } = useUI();
   const [searchOpen, setSearchOpen] = useState<boolean>(false);
   const [searchQuery, setSearchQuery] = useState<string>('');
 

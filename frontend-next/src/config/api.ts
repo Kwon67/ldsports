@@ -18,7 +18,9 @@ export function getApiUrl(): string {
   }
 
   // Acesso via rede: usar o mesmo IP do frontend
-  return `http://${hostname}:4001/api`;
+  // Garantir que não tenha porta duplicada
+  const cleanHost = hostname.split(':')[0];
+  return `http://${cleanHost}:4001/api`;
 }
 
 // Para compatibilidade com código existente
