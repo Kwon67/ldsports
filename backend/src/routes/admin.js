@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const multer = require('multer');
 const cloudinary = require('../config/cloudinary');
-const db = require('../database');
+const Product = require('../models/Product');
 
 // Multer config - store in memory for cloudinary upload
 const storage = multer.memoryStorage();
@@ -117,68 +117,84 @@ router.delete('/media/:publicId(*)', async (req, res) => {
 });
 
 // Get all products (for admin)
-router.get('/products', (req, res) => {
-  const products = db.getAllProducts();
-  res.json(products);
+router.get('/products', async (req, res) => {
+  try {
+    const products = await Product.find().sort({ createdAt: -1 });
+    res.json(products);
+  } catch (error) {
+    res.status(500).json({ error: 'Erro ao buscar produtos' });
+  }
 });
 
 // Create Product
-router.post('/products', (req, res) => {
-  const newProduct = req.body;
-  const created = db.createProduct(newProduct);
-  res.json(created);
+router.post('/products', async (req, res) => {
+  try {
+    const newProduct = new Product(req.body);
+    const created = await newProduct.save();
+    res.json(created);
+  } catch (error) {
+    res.status(500).json({ error: 'Erro ao criar produto' });
+  }
 });
 
 // Update Product
-router.put('/products/:id', (req, res) => {
-  const { id } = req.params;
-  const updates = req.body;
-  const updated = db.updateProduct(id, updates);
-  if (updated) {
-    res.json(updated);
-  } else {
-    res.status(404).json({ message: 'Produto não encontrado' });
+router.put('/products/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const updates = req.body;
+    const updated = await Product.findByIdAndUpdate(id, updates, { new: true });
+    if (updated) {
+      res.json(updated);
+    } else {
+      res.status(404).json({ message: 'Produto não encontrado' });
+    }
+  } catch (error) {
+    res.status(500).json({ error: 'Erro ao atualizar produto' });
   }
 });
 
 // Delete Product
 router.delete('/products/:id', async (req, res) => {
-  const { id } = req.params;
+  try {
+    const { id } = req.params;
 
-  // Get product first to delete its media from cloudinary
-  const product = db.getProductById(id);
-  if (product) {
-    try {
-      // Delete all images from the images array
-      if (product.images && Array.isArray(product.images)) {
-        for (const img of product.images) {
-          if (img.publicId) {
-            await cloudinary.uploader.destroy(img.publicId);
+    // Get product first to delete its media from cloudinary
+    const product = await Product.findById(id);
+    if (product) {
+      try {
+        // Delete all images from the images array
+        if (product.images && Array.isArray(product.images)) {
+          for (const img of product.images) {
+            if (img.publicId) {
+              await cloudinary.uploader.destroy(img.publicId);
+            }
           }
         }
-      }
 
-      // Delete video if exists
-      if (product.video && product.video.publicId) {
-        await cloudinary.uploader.destroy(product.video.publicId, {
-          resource_type: 'video',
-        });
-      }
+        // Delete video if exists
+        if (product.video && product.video.publicId) {
+          await cloudinary.uploader.destroy(product.video.publicId, {
+            resource_type: 'video',
+          });
+        }
 
-      // Legacy: delete single cloudinaryId if exists
-      if (product.cloudinaryId) {
-        await cloudinary.uploader.destroy(product.cloudinaryId);
+        // Legacy: delete single cloudinaryId if exists
+        if (product.cloudinaryId) {
+          await cloudinary.uploader.destroy(product.cloudinaryId);
+        }
+      } catch (e) {
+        console.error('Error deleting media from cloudinary:', e);
       }
-    } catch (e) {
-      console.error('Error deleting media from cloudinary:', e);
     }
-  }
 
-  const deleted = db.deleteProduct(id);
-  if (deleted) {
-    res.json({ success: true });
-  } else {
-    res.status(404).json({ message: 'Produto não encontrado' });
+    const deleted = await Product.findByIdAndDelete(id);
+    if (deleted) {
+      res.json({ success: true });
+    } else {
+      res.status(404).json({ message: 'Produto não encontrado' });
+    }
+  } catch (error) {
+    res.status(500).json({ error: 'Erro ao deletar produto' });
   }
 });
 

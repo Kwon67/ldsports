@@ -1,31 +1,44 @@
 const express = require('express');
 const router = express.Router();
-const db = require('../database');
+const Review = require('../models/Review');
 const { reviewSchema, validate } = require('../validators');
 
 // GET reviews por produto
-router.get('/:productId', (req, res) => {
-  const { productId } = req.params;
-  const reviews = db.getReviewsByProduct(productId);
-  res.json(reviews);
+router.get('/:productId', async (req, res) => {
+  try {
+    const { productId } = req.params;
+    const reviews = await Review.find({ productId }).sort({ createdAt: -1 });
+    res.json(reviews);
+  } catch (error) {
+    res.status(500).json({ error: 'Erro ao buscar avaliações' });
+  }
 });
 
 // POST nova review
-router.post('/', validate(reviewSchema), (req, res) => {
-  const { productId, rating, comment, author } = req.body;
-  const review = db.addReview({ productId, rating, comment, author });
-  res.status(201).json(review);
+router.post('/', validate(reviewSchema), async (req, res) => {
+  try {
+    const { productId, rating, comment, author } = req.body;
+    const review = new Review({ productId, rating, comment, author });
+    await review.save();
+    res.status(201).json(review);
+  } catch (error) {
+    res.status(500).json({ error: 'Erro ao criar avaliação' });
+  }
 });
 
 // GET média de avaliação de um produto
-router.get('/:productId/average', (req, res) => {
-  const { productId } = req.params;
-  const reviews = db.getReviewsByProduct(productId);
-  if (reviews.length === 0) {
-    return res.json({ average: 0, count: 0 });
+router.get('/:productId/average', async (req, res) => {
+  try {
+    const { productId } = req.params;
+    const reviews = await Review.find({ productId });
+    if (reviews.length === 0) {
+      return res.json({ average: 0, count: 0 });
+    }
+    const average = reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length;
+    res.json({ average: Math.round(average * 10) / 10, count: reviews.length });
+  } catch (error) {
+    res.status(500).json({ error: 'Erro ao calcular média' });
   }
-  const average = reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length;
-  res.json({ average: Math.round(average * 10) / 10, count: reviews.length });
 });
 
 module.exports = router;
