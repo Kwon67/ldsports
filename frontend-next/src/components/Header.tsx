@@ -138,56 +138,117 @@ function Header() {
       </header>
 
       {mobileMenuOpen && (
-        <div className="fixed inset-0 z-60">
+        <div className="fixed inset-0 z-60 animate-fadeIn">
           <div
-            className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+            className="absolute inset-0 bg-black/60 backdrop-blur-sm"
             onClick={() => setMobileMenuOpen(false)}
           />
 
-          <div className="absolute top-0 left-0 h-full w-[85%] max-w-xs bg-white shadow-2xl flex flex-col">
-            <div className="flex items-center justify-between p-6 border-b border-gray-100">
-              <div className="flex items-center gap-1">
-                <div className="w-8 h-8 bg-black text-white flex items-center justify-center font-black text-lg tracking-tighter italic transform -skew-x-12">
-                  LD
+          <div className="absolute top-0 left-0 h-full w-[85%] max-w-sm bg-gradient-to-br from-white to-gray-50 shadow-2xl flex flex-col animate-slideInLeft">
+            {/* Header do Menu */}
+            <div className="relative p-6 pb-8 bg-black text-white overflow-hidden">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/2"></div>
+              <div className="absolute bottom-0 left-0 w-24 h-24 bg-white/5 rounded-full translate-y-1/2 -translate-x-1/2"></div>
+
+              <div className="relative z-10">
+                <div className="flex items-center justify-between mb-6">
+                  <div className="flex items-center gap-2">
+                    <div className="w-10 h-10 bg-white text-black flex items-center justify-center font-black text-xl tracking-tighter italic transform -skew-x-12">
+                      LD
+                    </div>
+                    <span className="font-bold text-xl tracking-tight uppercase font-display">
+                      SPORTS
+                    </span>
+                  </div>
+                  <button
+                    className="p-2 hover:bg-white/20 rounded-full transition-colors"
+                    onClick={() => setMobileMenuOpen(false)}
+                    aria-label="Fechar menu"
+                  >
+                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M6 18L18 6M6 6l12 12"
+                      />
+                    </svg>
+                  </button>
                 </div>
-                <span className="font-bold text-lg tracking-tight uppercase font-display">
-                  SPORTS
-                </span>
+
+                <p className="text-white/70 text-xs uppercase tracking-wider font-medium">
+                  Coleção 2025
+                </p>
               </div>
-              <button
-                className="p-2 hover:bg-gray-100 rounded-full transition-colors"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M6 18L18 6M6 6l12 12"
-                  />
-                </svg>
-              </button>
             </div>
 
-            <nav className="flex-1 overflow-y-auto py-4">
-              <ul className="flex flex-col">
-                {menuItems.map(item => (
-                  <li key={item}>
+            {/* Navegação */}
+            <nav className="flex-1 overflow-y-auto py-2">
+              <ul className="flex flex-col gap-1 px-3">
+                {menuItems.map((item, index) => (
+                  <li key={item} style={{ animationDelay: `${index * 50}ms` }} className="animate-slideInRight">
                     <a
                       href={`#${item.toLowerCase()}`}
-                      className="block px-6 py-4 text-lg font-bold uppercase tracking-widest hover:bg-gray-50 border-b border-gray-50"
+                      className="group flex items-center justify-between px-4 py-4 text-base font-bold uppercase tracking-wide hover:bg-white transition-all rounded-lg"
                       onClick={() => setMobileMenuOpen(false)}
                     >
-                      {item}
-                      <span className="float-right">→</span>
+                      <span className="group-hover:translate-x-1 transition-transform">
+                        {item}
+                      </span>
+                      <svg className="w-5 h-5 text-gray-400 group-hover:text-black group-hover:translate-x-1 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                      </svg>
                     </a>
                   </li>
                 ))}
               </ul>
-              <div className="px-6 py-4 border-t border-gray-100">
-                <UserAuth />
+
+              {/* Link para Favoritos */}
+              <div className="px-3 mt-2">
+                <Link
+                  href="/favorites"
+                  className="group flex items-center justify-between px-4 py-4 text-base font-bold uppercase tracking-wide hover:bg-white transition-all rounded-lg"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  <span className="group-hover:translate-x-1 transition-transform flex items-center gap-2">
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                    </svg>
+                    Favoritos
+                  </span>
+                  <svg className="w-5 h-5 text-gray-400 group-hover:text-black group-hover:translate-x-1 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
+                </Link>
+              </div>
+
+              {/* Seção de Login/User */}
+              <div className="px-3 py-4 mt-2">
+                <div className="bg-gradient-to-br from-gray-100 to-white p-5 rounded-xl shadow-sm border border-gray-200">
+                  <div className="flex items-center gap-2 mb-3">
+                    <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                    </svg>
+                    <span className="text-xs font-bold uppercase tracking-wider text-gray-600">
+                      Minha Conta
+                    </span>
+                  </div>
+                  <UserAuth />
+                </div>
               </div>
             </nav>
+
+            {/* Footer do Menu */}
+            <div className="p-4 border-t border-gray-200 bg-white">
+              <div className="text-center">
+                <p className="text-xs text-gray-500 mb-1">
+                  Frete grátis para Piranhas, AL
+                </p>
+                <p className="text-xs font-bold uppercase tracking-wider text-gray-700">
+                  LDsports © 2025
+                </p>
+              </div>
+            </div>
           </div>
         </div>
       )}
