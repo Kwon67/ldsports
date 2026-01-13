@@ -4,6 +4,7 @@ const multer = require('multer');
 const rateLimit = require('express-rate-limit');
 const cloudinary = require('../config/cloudinary');
 const Product = require('../models/Product');
+const Settings = require('../models/Settings');
 
 // Rate limiter específico para uploads (mais restritivo)
 const uploadLimiter = rateLimit({
@@ -256,34 +257,33 @@ router.delete('/products/:id', async (req, res) => {
   }
 });
 
-const fs = require('fs');
-const path = require('path');
-
-const SETTINGS_FILE = path.join(__dirname, '../data/settings.json');
-
-// Get Settings
-router.get('/settings', (req, res) => {
+// Get Settings (usando MongoDB em vez de arquivo)
+router.get('/settings', async (req, res) => {
   try {
-    const settings = JSON.parse(fs.readFileSync(SETTINGS_FILE, 'utf8'));
-    if (!settings.heroImages && settings.heroImage) {
-      settings.heroImages = [settings.heroImage];
-    }
-    res.json(settings);
+    const settings = await Settings.getSingleton();
+    res.json({
+      heroImages: settings.heroImages || [],
+      heroImage: settings.heroImage || '',
+    });
   } catch (error) {
     console.error('Error reading settings:', error);
-    res.json({ heroImages: [], heroImage: '' });
+    res.status(500).json({
+      error: 'Erro ao buscar configurações',
+      heroImages: [],
+      heroImage: ''
+    });
   }
 });
 
-// Update Settings
-router.put('/settings', (req, res) => {
+// Update Settings (usando MongoDB em vez de arquivo)
+router.put('/settings', async (req, res) => {
   try {
     const { heroImage, heroImages } = req.body;
-    const settings = {
+    const updates = {
       heroImages: Array.isArray(heroImages) ? heroImages.filter(Boolean) : [],
       heroImage: heroImage || (heroImages?.[0] || ''),
     };
-    fs.writeFileSync(SETTINGS_FILE, JSON.stringify(settings, null, 2));
+    const settings = await Settings.updateSettings(updates);
     res.json({ success: true, settings });
   } catch (error) {
     console.error('Error saving settings:', error);
