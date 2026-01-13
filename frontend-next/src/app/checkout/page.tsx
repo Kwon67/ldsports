@@ -80,7 +80,7 @@ export default function CheckoutPage() {
       `_Pedido gerado via site LDSports_`;
 
     const encodedMessage = encodeURIComponent(message);
-    const whatsappUrl = `https://wa.me/5582981334027?text=${encodedMessage}`;
+    const whatsappUrl = `https://wa.me/5582982105170?text=${encodedMessage}`;
 
     await new Promise(r => setTimeout(r, 1000));
 

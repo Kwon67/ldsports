@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { usePathname } from 'next/navigation';
 
-const WHATSAPP_NUMBER = '5582981334027';
+const WHATSAPP_NUMBER = '5582982105170';
 const DEFAULT_MESSAGE = 'Olá! Vim pelo site LDSports e gostaria de mais informações.';
 
 export default function FloatingWhatsApp() {
