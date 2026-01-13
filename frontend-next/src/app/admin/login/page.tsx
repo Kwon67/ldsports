@@ -24,7 +24,13 @@ function AdminLogin() {
     setLoading(true);
 
     try {
-      const response = await axios.post(`${getApiUrl()}/admin/login`, { username, password });
+      const apiUrl = getApiUrl();
+      console.log('[Login] Tentando fazer login em:', `${apiUrl}/admin/login`);
+      console.log('[Login] Username:', username);
+
+      const response = await axios.post(`${apiUrl}/admin/login`, { username, password });
+
+      console.log('[Login] Resposta recebida:', response.data);
 
       if (response.data.success) {
         login(response.data.token);
@@ -32,9 +38,24 @@ function AdminLogin() {
       }
     } catch (err) {
       const axiosError = err as AxiosError;
+      console.error('[Login] Erro ao fazer login:', axiosError);
+      console.error('[Login] Erro detalhado:', {
+        message: axiosError.message,
+        status: axiosError.response?.status,
+        data: axiosError.response?.data,
+        hasRequest: !!axiosError.request,
+        hasResponse: !!axiosError.response
+      });
+
       if (axiosError.response?.status === 401) {
         setError('Usuário ou senha incorretos.');
+      } else if (axiosError.response?.status === 429) {
+        setError('Muitas tentativas de login. Aguarde alguns minutos.');
+      } else if (axiosError.response) {
+        // Servidor respondeu com erro
+        setError(`Erro do servidor: ${axiosError.response.status}`);
       } else if (axiosError.request) {
+        // Requisição foi feita mas não recebeu resposta
         setError('Servidor offline. Verifique a conexão.');
       } else {
         setError('Erro ao fazer login.');
