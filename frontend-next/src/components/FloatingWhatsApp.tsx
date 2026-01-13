@@ -30,7 +30,16 @@ export default function FloatingWhatsApp() {
 
   const handleClick = () => {
     const encodedMessage = encodeURIComponent(DEFAULT_MESSAGE);
-    window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodedMessage}`, '_blank');
+    const whatsappUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodedMessage}`;
+
+    // Criar link temporário para abrir WhatsApp (funciona melhor em iOS)
+    const link = document.createElement('a');
+    link.href = whatsappUrl;
+    link.target = '_blank';
+    link.rel = 'noopener noreferrer';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   };
 
   if (!isVisible || shouldHide) return null;

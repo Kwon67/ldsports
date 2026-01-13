@@ -87,7 +87,14 @@ export default function CheckoutPage() {
     const newOrderNumber = Date.now().toString(36).toUpperCase().slice(-9);
     setOrderNumber(newOrderNumber);
 
-    window.open(whatsappUrl, '_blank');
+    // Criar link temporário para abrir WhatsApp (funciona melhor em iOS)
+    const link = document.createElement('a');
+    link.href = whatsappUrl;
+    link.target = '_blank';
+    link.rel = 'noopener noreferrer';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
 
     setLoading(false);
     setStep(3);
