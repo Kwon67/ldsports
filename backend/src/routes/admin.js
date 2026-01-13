@@ -129,11 +129,15 @@ router.get('/products', async (req, res) => {
 // Create Product
 router.post('/products', async (req, res) => {
   try {
+    console.log('Creating product with data:', JSON.stringify(req.body));
     const newProduct = new Product(req.body);
     const created = await newProduct.save();
+    console.log('Product created successfully:', created._id);
     res.json(created);
   } catch (error) {
-    res.status(500).json({ error: 'Erro ao criar produto' });
+    console.error('Error creating product:', error.message);
+    console.error('Error details:', error);
+    res.status(500).json({ error: 'Erro ao criar produto', details: error.message });
   }
 });
 
@@ -142,14 +146,19 @@ router.put('/products/:id', async (req, res) => {
   try {
     const { id } = req.params;
     const updates = req.body;
-    const updated = await Product.findByIdAndUpdate(id, updates, { new: true });
+    console.log('Updating product:', id, 'with data:', JSON.stringify(updates));
+    const updated = await Product.findByIdAndUpdate(id, updates, { new: true, runValidators: true });
     if (updated) {
+      console.log('Product updated successfully:', updated._id);
       res.json(updated);
     } else {
+      console.log('Product not found:', id);
       res.status(404).json({ message: 'Produto não encontrado' });
     }
   } catch (error) {
-    res.status(500).json({ error: 'Erro ao atualizar produto' });
+    console.error('Error updating product:', error.message);
+    console.error('Error details:', error);
+    res.status(500).json({ error: 'Erro ao atualizar produto', details: error.message });
   }
 });
 
@@ -157,6 +166,7 @@ router.put('/products/:id', async (req, res) => {
 router.delete('/products/:id', async (req, res) => {
   try {
     const { id } = req.params;
+    console.log('Deleting product:', id);
 
     // Get product first to delete its media from cloudinary
     const product = await Product.findById(id);
@@ -189,12 +199,16 @@ router.delete('/products/:id', async (req, res) => {
 
     const deleted = await Product.findByIdAndDelete(id);
     if (deleted) {
+      console.log('Product deleted successfully:', id);
       res.json({ success: true });
     } else {
+      console.log('Product not found for deletion:', id);
       res.status(404).json({ message: 'Produto não encontrado' });
     }
   } catch (error) {
-    res.status(500).json({ error: 'Erro ao deletar produto' });
+    console.error('Error deleting product:', error.message);
+    console.error('Error details:', error);
+    res.status(500).json({ error: 'Erro ao deletar produto', details: error.message });
   }
 });
 

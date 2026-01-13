@@ -18,11 +18,15 @@ router.get('/:productId', async (req, res) => {
 router.post('/', validate(reviewSchema), async (req, res) => {
   try {
     const { productId, rating, comment, author } = req.body;
+    console.log('Creating review:', JSON.stringify(req.body));
     const review = new Review({ productId, rating, comment, author });
     await review.save();
+    console.log('Review created successfully:', review._id);
     res.status(201).json(review);
   } catch (error) {
-    res.status(500).json({ error: 'Erro ao criar avaliação' });
+    console.error('Error creating review:', error.message);
+    console.error('Error details:', error);
+    res.status(500).json({ error: 'Erro ao criar avaliação', details: error.message });
   }
 });
 
