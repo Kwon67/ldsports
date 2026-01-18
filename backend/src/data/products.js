@@ -9,6 +9,16 @@ const liverpool = require('./teams/liverpool');
 const manCity = require('./teams/man-city');
 const corinthians = require('./teams/corinthians');
 const saoPaulo = require('./teams/sao-paulo');
+const gremio = require('./teams/gremio');
+const internacional = require('./teams/internacional');
+const botafogo = require('./teams/botafogo');
+const fluminense = require('./teams/fluminense');
+const atleticoMg = require('./teams/atletico-mg');
+const bayern = require('./teams/bayern');
+const juventus = require('./teams/juventus');
+const milan = require('./teams/milan');
+const manUnited = require('./teams/man-united');
+const chelsea = require('./teams/chelsea');
 
 const teamsData = [
   brasil,
@@ -22,6 +32,16 @@ const teamsData = [
   manCity,
   corinthians,
   saoPaulo,
+  gremio,
+  internacional,
+  botafogo,
+  fluminense,
+  atleticoMg,
+  bayern,
+  juventus,
+  milan,
+  manUnited,
+  chelsea,
 ];
 
 const products = teamsData.flatMap(teamData =>

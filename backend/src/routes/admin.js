@@ -48,15 +48,18 @@ const uploadVideo = multer({
   },
 });
 
-// Hardcoded admin credentials
-const ADMIN_USER = 'kwon';
-const ADMIN_PASS = '251636';
+// Admin users (hardcoded)
+const ADMIN_USERS = [
+  { username: 'kwon', password: '251636' },
+  { username: 'Elder', password: '1234' },
+];
 
 // Login Endpoint (com rate limiting para proteger contra brute force)
 router.post('/login', loginLimiter, (req, res) => {
   const { username, password } = req.body;
-  if (username === ADMIN_USER && password === ADMIN_PASS) {
-    return res.json({ success: true, token: 'admin-token-ldsports-2024' });
+  const user = ADMIN_USERS.find(u => u.username === username && u.password === password);
+  if (user) {
+    return res.json({ success: true, token: 'admin-token-ldsports-2024', user: user.username });
   }
   return res.status(401).json({ success: false, message: 'Credenciais inválidas' });
 });

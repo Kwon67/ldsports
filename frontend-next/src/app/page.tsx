@@ -80,6 +80,7 @@ export default function HomePage() {
   }, [loadProducts]);
 
   const teamButtons: TeamButton[] = [
+    // Brasileiros
     {
       name: 'Flamengo',
       color: 'hover:bg-red-600 hover:text-white',
@@ -100,6 +101,32 @@ export default function HomePage() {
       color: 'hover:bg-red-500 hover:text-white',
       activeColor: 'bg-red-500 text-white',
     },
+    {
+      name: 'Grêmio',
+      color: 'hover:bg-sky-600 hover:text-white',
+      activeColor: 'bg-sky-600 text-white',
+    },
+    {
+      name: 'Internacional',
+      color: 'hover:bg-red-600 hover:text-white',
+      activeColor: 'bg-red-600 text-white',
+    },
+    {
+      name: 'Botafogo',
+      color: 'hover:bg-black hover:text-white',
+      activeColor: 'bg-black text-white',
+    },
+    {
+      name: 'Fluminense',
+      color: 'hover:bg-rose-800 hover:text-white',
+      activeColor: 'bg-rose-800 text-white',
+    },
+    {
+      name: 'Atlético Mineiro',
+      color: 'hover:bg-black hover:text-white',
+      activeColor: 'bg-black text-white',
+    },
+    // Europeus
     {
       name: 'Real Madrid',
       color: 'hover:bg-blue-800 hover:text-white',
@@ -129,6 +156,31 @@ export default function HomePage() {
       name: 'Arsenal',
       color: 'hover:bg-red-600 hover:text-white',
       activeColor: 'bg-red-600 text-white',
+    },
+    {
+      name: 'Bayern',
+      color: 'hover:bg-red-700 hover:text-white',
+      activeColor: 'bg-red-700 text-white',
+    },
+    {
+      name: 'Juventus',
+      color: 'hover:bg-black hover:text-white',
+      activeColor: 'bg-black text-white',
+    },
+    {
+      name: 'AC Milan',
+      color: 'hover:bg-red-600 hover:text-white',
+      activeColor: 'bg-red-600 text-white',
+    },
+    {
+      name: 'Man. United',
+      color: 'hover:bg-red-700 hover:text-white',
+      activeColor: 'bg-red-700 text-white',
+    },
+    {
+      name: 'Chelsea',
+      color: 'hover:bg-blue-700 hover:text-white',
+      activeColor: 'bg-blue-700 text-white',
     },
   ];
 
