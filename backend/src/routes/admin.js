@@ -5,6 +5,7 @@ const rateLimit = require('express-rate-limit');
 const cloudinary = require('../config/cloudinary');
 const Product = require('../models/Product');
 const Settings = require('../models/Settings');
+const Admin = require('../models/Admin');
 
 // Rate limiter específico para uploads (mais restritivo)
 const uploadLimiter = rateLimit({
@@ -15,9 +16,10 @@ const uploadLimiter = rateLimit({
 });
 
 // Rate limiter para login (proteção contra brute force)
+const isDevelopment = process.env.NODE_ENV !== 'production';
 const loginLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutos
-  max: 5, // 5 tentativas por 15 minutos
+  max: isDevelopment ? 50 : 5, // Dev: 50 tentativas, Prod: 5 tentativas
   message: { error: 'Muitas tentativas de login. Tente novamente em 15 minutos.' },
   standardHeaders: true,
 });
@@ -48,21 +50,38 @@ const uploadVideo = multer({
   },
 });
 
-// Admin users (hardcoded)
-const ADMIN_USERS = [
-  { username: 'kwon', password: '251636' },
-  { username: 'Elder', password: '1234' },
-];
-
 // Login Endpoint (com rate limiting para proteger contra brute force)
-router.post('/login', loginLimiter, (req, res) => {
-  const { username, password } = req.body;
-  // Comparação case-insensitive para username
-  const user = ADMIN_USERS.find(u => u.username.toLowerCase() === username.toLowerCase() && u.password === password);
-  if (user) {
-    return res.json({ success: true, token: 'admin-token-ldsports-2024', user: user.username });
+router.post('/login', loginLimiter, async (req, res) => {
+  try {
+    const { username, password } = req.body;
+
+    if (!username || !password) {
+      return res.status(400).json({ success: false, message: 'Usuário e senha são obrigatórios' });
+    }
+
+    // Buscar admin no banco (username já é lowercase no schema)
+    const admin = await Admin.findOne({ username: username.toLowerCase(), isActive: true });
+
+    if (!admin) {
+      return res.status(401).json({ success: false, message: 'Credenciais inválidas' });
+    }
+
+    // Verificar senha com bcrypt
+    const isMatch = await admin.comparePassword(password);
+
+    if (!isMatch) {
+      return res.status(401).json({ success: false, message: 'Credenciais inválidas' });
+    }
+
+    return res.json({
+      success: true,
+      token: 'admin-token-ldsports-2024',
+      user: admin.displayName || admin.username,
+    });
+  } catch (error) {
+    console.error('Erro no login:', error);
+    return res.status(500).json({ success: false, message: 'Erro interno do servidor' });
   }
-  return res.status(401).json({ success: false, message: 'Credenciais inválidas' });
 });
 
 // Upload Image to Cloudinary (com rate limiting)

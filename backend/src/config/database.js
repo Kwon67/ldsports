@@ -5,6 +5,10 @@ const connectDB = async () => {
     const conn = await mongoose.connect(process.env.MONGODB_URI);
 
     console.log(`MongoDB conectado: ${conn.connection.host}`);
+
+    // Seed dos admins iniciais
+    const Admin = require('../models/Admin');
+    await Admin.seedAdmins();
   } catch (error) {
     console.error(`Erro ao conectar ao MongoDB: ${error.message}`);
     process.exit(1);
