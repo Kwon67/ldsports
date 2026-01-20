@@ -57,7 +57,8 @@ const ADMIN_USERS = [
 // Login Endpoint (com rate limiting para proteger contra brute force)
 router.post('/login', loginLimiter, (req, res) => {
   const { username, password } = req.body;
-  const user = ADMIN_USERS.find(u => u.username === username && u.password === password);
+  // Comparação case-insensitive para username
+  const user = ADMIN_USERS.find(u => u.username.toLowerCase() === username.toLowerCase() && u.password === password);
   if (user) {
     return res.json({ success: true, token: 'admin-token-ldsports-2024', user: user.username });
   }
