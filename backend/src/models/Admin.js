@@ -56,24 +56,20 @@ adminSchema.statics.seedAdmins = async function () {
       await this.create(adminData);
       console.log(`Admin '${adminData.username}' criado com sucesso`);
     } else {
-      // Verificar se a senha precisa ser atualizada
-      const passwordMatch = await existingAdmin.comparePassword(adminData.password);
-      if (!passwordMatch) {
-        // Criar hash manualmente e usar updateOne para evitar double-hashing
-        const salt = await bcrypt.genSalt(10);
-        const hashedPassword = await bcrypt.hash(adminData.password, salt);
-        await this.updateOne(
-          { _id: existingAdmin._id },
-          { 
-            $set: { 
-              password: hashedPassword, 
-              displayName: adminData.displayName, 
-              isActive: true 
-            } 
-          }
-        );
-        console.log(`Admin '${adminData.username}' senha atualizada`);
-      }
+      // SEMPRE atualizar a senha para garantir sincronização
+      const salt = await bcrypt.genSalt(10);
+      const hashedPassword = await bcrypt.hash(adminData.password, salt);
+      await this.updateOne(
+        { _id: existingAdmin._id },
+        { 
+          $set: { 
+            password: hashedPassword, 
+            displayName: adminData.displayName, 
+            isActive: true 
+          } 
+        }
+      );
+      console.log(`Admin '${adminData.username}' senha sincronizada`);
     }
   }
 };
