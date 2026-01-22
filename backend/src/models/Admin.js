@@ -59,11 +59,19 @@ adminSchema.statics.seedAdmins = async function () {
       // Verificar se a senha precisa ser atualizada
       const passwordMatch = await existingAdmin.comparePassword(adminData.password);
       if (!passwordMatch) {
-        // Atualizar senha (usar save() para disparar o pre-save hook)
-        existingAdmin.password = adminData.password;
-        existingAdmin.displayName = adminData.displayName;
-        existingAdmin.isActive = true;
-        await existingAdmin.save();
+        // Criar hash manualmente e usar updateOne para evitar double-hashing
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(adminData.password, salt);
+        await this.updateOne(
+          { _id: existingAdmin._id },
+          { 
+            $set: { 
+              password: hashedPassword, 
+              displayName: adminData.displayName, 
+              isActive: true 
+            } 
+          }
+        );
         console.log(`Admin '${adminData.username}' senha atualizada`);
       }
     }
