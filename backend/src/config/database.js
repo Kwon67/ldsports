@@ -4,12 +4,12 @@ const mongoose = require('mongoose');
 let cached = global.mongoose;
 
 if (!cached) {
-  cached = global.mongoose = { conn: null, promise: null, seeded: false };
+  cached = global.mongoose = { conn: null, promise: null };
 }
 
 const connectDB = async () => {
-  // Se já está conectado, retorna a conexão existente
-  if (cached.conn && cached.seeded) {
+  // Se já está conectado e a conexão está pronta, retorna
+  if (cached.conn && mongoose.connection.readyState === 1) {
     return cached.conn;
   }
 
@@ -24,21 +24,18 @@ const connectDB = async () => {
 
     cached.promise = mongoose.connect(process.env.MONGODB_URI, opts).then(async (mongoose) => {
       console.log(`MongoDB conectado: ${mongoose.connection.host}`);
+      
+      // Seed dos admins iniciais
+      const Admin = require('../models/Admin');
+      await Admin.seedAdmins();
+      console.log('Admin seeding concluído');
+      
       return mongoose;
     });
   }
 
   try {
     cached.conn = await cached.promise;
-
-    // Seed dos admins iniciais (apenas uma vez)
-    if (!cached.seeded) {
-      const Admin = require('../models/Admin');
-      await Admin.seedAdmins();
-      cached.seeded = true;
-      console.log('Admin seeding concluído');
-    }
-
     return cached.conn;
   } catch (error) {
     cached.promise = null;
@@ -48,3 +45,4 @@ const connectDB = async () => {
 };
 
 module.exports = connectDB;
+
