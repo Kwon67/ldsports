@@ -51,6 +51,30 @@ const uploadVideo = multer({
 });
 
 // Login Endpoint (com rate limiting para proteger contra brute force)
+// DEBUG: Endpoint temporário para verificar admins (remover depois)
+router.get('/debug-check', async (req, res) => {
+  try {
+    const admins = await Admin.find({});
+    const bcrypt = require('bcrypt');
+    const result = [];
+    
+    for (const a of admins) {
+      const match1234 = await bcrypt.compare('1234', a.password);
+      const match251636 = await bcrypt.compare('251636', a.password);
+      result.push({
+        username: a.username,
+        isActive: a.isActive,
+        match1234,
+        match251636
+      });
+    }
+    
+    res.json({ admins: result, count: admins.length });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 router.post('/login', loginLimiter, async (req, res) => {
   try {
     const { username, password } = req.body;
