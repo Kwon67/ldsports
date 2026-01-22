@@ -10,6 +10,7 @@ router.get('/:productId', async (req, res) => {
     const reviews = await Review.find({ productId }).sort({ createdAt: -1 });
     res.json(reviews);
   } catch (error) {
+    console.error('Error fetching reviews:', error);
     res.status(500).json({ error: 'Erro ao buscar avaliações' });
   }
 });
@@ -41,6 +42,7 @@ router.get('/:productId/average', async (req, res) => {
     const average = reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length;
     res.json({ average: Math.round(average * 10) / 10, count: reviews.length });
   } catch (error) {
+    console.error('Error calculating average:', error);
     res.status(500).json({ error: 'Erro ao calcular média' });
   }
 });

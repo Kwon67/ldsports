@@ -8,11 +8,22 @@ const productsRoutes = require('./routes/products');
 const teamsRoutes = require('./routes/teams');
 const reviewsRoutes = require('./routes/reviews');
 
-// Conectar ao MongoDB
-connectDB();
-
 const app = express();
 const PORT = process.env.PORT || 4001;
+
+// Middleware para garantir conexão MongoDB antes de processar requisições API
+app.use('/api', async (req, res, next) => {
+  try {
+    await connectDB();
+    next();
+  } catch (error) {
+    console.error('Erro de conexão MongoDB:', error.message);
+    res.status(503).json({ error: 'Serviço temporariamente indisponível' });
+  }
+});
+
+// Conectar ao MongoDB na inicialização (para ambiente local)
+connectDB().catch(err => console.error('Erro inicial de conexão:', err.message));
 
 const adminRoutes = require('./routes/admin');
 
